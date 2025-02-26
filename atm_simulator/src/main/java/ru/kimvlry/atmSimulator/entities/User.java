@@ -11,12 +11,10 @@ import java.util.Map;
 import java.util.UUID;
 
 public class User {
-    private String name;
     private Map<String, BankAccount> accounts;
     private String currentAccountID;
 
-    public User(String name) {
-        this.name = name;
+    public User() {
         this.accounts = new HashMap<>();
     }
 
