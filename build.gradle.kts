@@ -1,0 +1,23 @@
+plugins {
+    java
+}
+
+subprojects {
+    apply(plugin = "java")
+
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    }
+
+    tasks.test {
+        useJUnitPlatform()
+    }
+}
