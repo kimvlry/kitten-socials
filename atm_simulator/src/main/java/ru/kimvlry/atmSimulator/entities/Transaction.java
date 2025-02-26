@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 
 public class Transaction {
     public final String accountNumber;
-    public final String type;
+    public final TransactionType type;
     public final BigDecimal amount;
     public final LocalDateTime timestamp;
 
-    public Transaction(String accountNumber, String type, BigDecimal amount) {
+    public Transaction(String accountNumber, TransactionType type, BigDecimal amount) {
         this.accountNumber = accountNumber;
         this.type = type;
         this.amount = amount;

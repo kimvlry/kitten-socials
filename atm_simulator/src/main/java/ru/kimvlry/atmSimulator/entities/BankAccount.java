@@ -19,7 +19,7 @@ public class BankAccount {
 
     public void deposit(BigDecimal amount) {
         this.balance = balance.add(amount);
-        transactionsHistory.add(new Transaction(accountID, "DEPOSIT", amount));
+        transactionsHistory.add(new Transaction(accountID, TransactionType.DEPOSIT, amount));
     }
 
     public Result withdraw(BigDecimal amount) {
@@ -27,7 +27,7 @@ public class BankAccount {
             return Result.failure(new InsufficientFundsException());
         }
         this.balance = balance.subtract(amount);
-        transactionsHistory.add(new Transaction(accountID, "WITHDRAW", amount));
+        transactionsHistory.add(new Transaction(accountID, TransactionType.WITHDRAW, amount));
         return Result.success(null);
     }
 
