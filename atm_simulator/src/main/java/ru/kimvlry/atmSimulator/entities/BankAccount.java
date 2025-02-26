@@ -1,7 +1,6 @@
 package ru.kimvlry.atmSimulator.entities;
 
 import ru.kimvlry.atmSimulator.operationResults.InsufficientFundsException;
-import ru.kimvlry.atmSimulator.operationResults.Result;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,13 +21,13 @@ public class BankAccount {
         transactionsHistory.add(new Transaction(accountID, TransactionType.DEPOSIT, amount));
     }
 
-    public Result withdraw(BigDecimal amount) {
+    public BigDecimal withdraw(BigDecimal amount) throws InsufficientFundsException{
         if (balance.compareTo(amount) < 0) {
-            return Result.failure(new InsufficientFundsException());
+            throw new InsufficientFundsException();
         }
         this.balance = balance.subtract(amount);
         transactionsHistory.add(new Transaction(accountID, TransactionType.WITHDRAW, amount));
-        return Result.success(null);
+        return this.balance;
     }
 
     public BigDecimal getBalance() {

@@ -1,11 +1,12 @@
 package ru.kimvlry.atmSimulator.entities;
 
 import ru.kimvlry.atmSimulator.operationResults.AccountNotFoundException;
+import ru.kimvlry.atmSimulator.operationResults.InsufficientFundsException;
 import ru.kimvlry.atmSimulator.operationResults.NoAccountSelectedException;
-import ru.kimvlry.atmSimulator.operationResults.Result;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,56 +20,61 @@ public class User {
         this.accounts = new HashMap<>();
     }
 
-    public Result createAccount() {
+    public String createAccount() {
         String accountNumber = UUID.randomUUID().toString();
         while (accounts.containsKey(accountNumber)) {
             accountNumber = UUID.randomUUID().toString();
         }
         accounts.put(accountNumber, new BankAccount(accountNumber));
-        return Result.success(null);
+        return accountNumber;
     }
 
-    public Result switchAccount(String accountNumber) {
+    public void switchAccount(String accountNumber) throws AccountNotFoundException {
         if (!accounts.containsKey(accountNumber)) {
-            return Result.failure(new AccountNotFoundException(accountNumber));
+            throw new AccountNotFoundException(accountNumber);
         }
         currentAccountID = accountNumber;
-        return Result.success(null);
     }
 
-    public Result getCurrentAccount() {
+    public String getCurrentAccount() throws NoAccountSelectedException {
         if (currentAccountID == null) {
-            return Result.failure(new NoAccountSelectedException());
+            throw new NoAccountSelectedException();
         }
-        return Result.success(accounts.get(currentAccountID));
+        return currentAccountID;
     }
 
-    public Result getBalance() {
+    public BigDecimal getBalance() throws NoAccountSelectedException {
         if (currentAccountID == null) {
-            return Result.failure(new NoAccountSelectedException());
+            throw new NoAccountSelectedException();
         }
-        return Result.success(accounts.get(currentAccountID).getBalance());
+        return accounts.get(currentAccountID).getBalance();
     }
 
-    public Result deposit(BigDecimal amount) {
+    public BigDecimal deposit(BigDecimal amount) throws NoAccountSelectedException {
         if (currentAccountID == null) {
-            return Result.failure(new NoAccountSelectedException());
+            throw new NoAccountSelectedException();
         }
         accounts.get(currentAccountID).deposit(amount);
-        return Result.success(null);
+        return accounts.get(currentAccountID).getBalance();
     }
 
-    public Result withdraw(BigDecimal amount) {
+    public BigDecimal withdraw(BigDecimal amount) throws NoAccountSelectedException, InsufficientFundsException {
         if (currentAccountID == null) {
-            return Result.failure(new IllegalStateException("No account selected"));
+            throw new NoAccountSelectedException();
         }
-        return accounts.get(currentAccountID).withdraw(amount);
+        try {
+            accounts.get(currentAccountID).withdraw(amount);
+        }
+        catch (InsufficientFundsException e) {
+            throw e;
+        }
+        return accounts.get(currentAccountID).getBalance();
     }
 
-    public Result getTransactionHistory() {
+    public List<String> getTransactionHistory() throws NoAccountSelectedException {
         if (currentAccountID == null) {
-            return Result.failure(new NoAccountSelectedException());
+            throw new NoAccountSelectedException();
         }
-        return Result.success(accounts.get(currentAccountID).getTransactionHistory());
+        return accounts.get(currentAccountID).getTransactionHistory();
     }
 }
