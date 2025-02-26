@@ -14,6 +14,7 @@ public class BankAccount {
     public BankAccount(String accountID) {
         this.accountID = accountID;
         this.balance = BigDecimal.ZERO;
+        this.transactionsHistory = new ArrayList<>();
     }
 
     public void deposit(BigDecimal amount) {

@@ -62,12 +62,7 @@ public class User {
         if (currentAccountID == null) {
             throw new NoAccountSelectedException();
         }
-        try {
-            accounts.get(currentAccountID).withdraw(amount);
-        }
-        catch (InsufficientFundsException e) {
-            throw e;
-        }
+        accounts.get(currentAccountID).withdraw(amount);
         return accounts.get(currentAccountID).getBalance();
     }
 
