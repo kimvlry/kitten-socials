@@ -32,7 +32,7 @@ public class BankAccount {
      *
      * @param amount the amount to deposit.
      * @return account balance after successful transaction
-     * @throws InvalidAmountException in case the {@code amount} is < 0 RUB
+     * @throws InvalidAmountException in case the {@code amount} is &lt 0 RUB
      */
     public BigDecimal deposit(BigDecimal amount) throws InvalidAmountException {
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
@@ -49,7 +49,7 @@ public class BankAccount {
      * @param amount the amount to withdraw
      * @return account balance after successful transaction
      * @throws InsufficientFundsException if the account balance is insufficient
-     * @throws InvalidAmountException in case the {@code amount} is < 0 RUB
+     * @throws InvalidAmountException in case the {@code amount} is &lt 0 RUB
      */
     public BigDecimal withdraw(BigDecimal amount) throws InsufficientFundsException, InvalidAmountException {
         if (balance.compareTo(amount) < 0) {
