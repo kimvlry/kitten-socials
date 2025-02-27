@@ -20,4 +20,13 @@ subprojects {
     tasks.test {
         useJUnitPlatform()
     }
+
+    tasks.register<Javadoc>("generateJavaDoc") {
+        source = sourceSets["main"].allJava
+        classpath = sourceSets["main"].compileClasspath
+        setDestinationDir(file("javadoc"))
+    }
+    tasks.build {
+        dependsOn("generateJavaDoc")
+    }
 }
