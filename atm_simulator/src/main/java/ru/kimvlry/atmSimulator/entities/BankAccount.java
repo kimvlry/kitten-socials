@@ -1,7 +1,7 @@
 package ru.kimvlry.atmSimulator.entities;
 
 import ru.kimvlry.atmSimulator.operationResults.InsufficientFundsException;
-import ru.kimvlry.atmSimulator.operationResults.InvaidAmountException;
+import ru.kimvlry.atmSimulator.operationResults.InvalidAmountException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,11 +32,11 @@ public class BankAccount {
      *
      * @param amount the amount to deposit.
      * @return account balance after successful transaction
-     * @throws InvaidAmountException in case the {@code amount} is < 0 RUB
+     * @throws InvalidAmountException in case the {@code amount} is < 0 RUB
      */
-    public BigDecimal deposit(BigDecimal amount) throws InvaidAmountException {
+    public BigDecimal deposit(BigDecimal amount) throws InvalidAmountException {
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvaidAmountException();
+            throw new InvalidAmountException();
         }
         this.balance = balance.add(amount);
         transactionsHistory.add(new Transaction(accountID, TransactionType.DEPOSIT, amount));
@@ -49,14 +49,14 @@ public class BankAccount {
      * @param amount the amount to withdraw
      * @return account balance after successful transaction
      * @throws InsufficientFundsException if the account balance is insufficient
-     * @throws InvaidAmountException in case the {@code amount} is < 0 RUB
+     * @throws InvalidAmountException in case the {@code amount} is < 0 RUB
      */
-    public BigDecimal withdraw(BigDecimal amount) throws InsufficientFundsException, InvaidAmountException {
+    public BigDecimal withdraw(BigDecimal amount) throws InsufficientFundsException, InvalidAmountException {
         if (balance.compareTo(amount) < 0) {
             throw new InsufficientFundsException();
         }
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvaidAmountException();
+            throw new InvalidAmountException();
         }
         this.balance = balance.subtract(amount);
         transactionsHistory.add(new Transaction(accountID, TransactionType.WITHDRAW, amount));

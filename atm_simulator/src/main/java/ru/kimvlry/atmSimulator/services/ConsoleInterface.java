@@ -3,7 +3,7 @@ package ru.kimvlry.atmSimulator.services;
 import ru.kimvlry.atmSimulator.entities.User;
 import ru.kimvlry.atmSimulator.operationResults.AccountNotFoundException;
 import ru.kimvlry.atmSimulator.operationResults.InsufficientFundsException;
-import ru.kimvlry.atmSimulator.operationResults.InvaidAmountException;
+import ru.kimvlry.atmSimulator.operationResults.InvalidAmountException;
 import ru.kimvlry.atmSimulator.operationResults.NoAccountSelectedException;
 
 import java.math.BigDecimal;
@@ -117,7 +117,7 @@ public class ConsoleInterface {
             BigDecimal after = user.deposit(amount);
             System.out.println("Deposit successful! Current balance: " + after);
         }
-        catch (NoAccountSelectedException | InvaidAmountException e) {
+        catch (NoAccountSelectedException | InvalidAmountException e) {
             System.out.println("Error: " + e.getMessage());
         }
         catch (NumberFormatException e) {
@@ -137,7 +137,7 @@ public class ConsoleInterface {
             BigDecimal after = user.withdraw(amount);
             System.out.println("Withdrawal successful! Current balance: " + after);
         }
-        catch (NoAccountSelectedException | InsufficientFundsException | InvaidAmountException e) {
+        catch (NoAccountSelectedException | InsufficientFundsException | InvalidAmountException e) {
             System.out.println("Error: " + e.getMessage());
         }
         catch (NumberFormatException e) {

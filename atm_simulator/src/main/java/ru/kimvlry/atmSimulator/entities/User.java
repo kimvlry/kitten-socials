@@ -2,7 +2,7 @@ package ru.kimvlry.atmSimulator.entities;
 
 import ru.kimvlry.atmSimulator.operationResults.AccountNotFoundException;
 import ru.kimvlry.atmSimulator.operationResults.InsufficientFundsException;
-import ru.kimvlry.atmSimulator.operationResults.InvaidAmountException;
+import ru.kimvlry.atmSimulator.operationResults.InvalidAmountException;
 import ru.kimvlry.atmSimulator.operationResults.NoAccountSelectedException;
 
 import java.math.BigDecimal;
@@ -72,9 +72,9 @@ public class User {
      * @param amount the amount to deposit
      * @return the updated balance after the deposit
      * @throws NoAccountSelectedException if no account is currently selected
-     * @throws InvaidAmountException if the provided amount is invalid (e.g., non-positive)
+     * @throws InvalidAmountException if the provided amount is invalid (e.g., non-positive)
      */
-    public BigDecimal deposit(BigDecimal amount) throws NoAccountSelectedException, InvaidAmountException {
+    public BigDecimal deposit(BigDecimal amount) throws NoAccountSelectedException, InvalidAmountException {
         if (currentAccountID == null) {
             throw new NoAccountSelectedException();
         }
@@ -88,9 +88,9 @@ public class User {
      * @return the updated balance after the withdrawal
      * @throws NoAccountSelectedException if no account is currently selected
      * @throws InsufficientFundsException if the account has insufficient funds
-     * @throws InvaidAmountException if the provided amount is invalid (e.g., non-positive)
+     * @throws InvalidAmountException if the provided amount is invalid (e.g., non-positive)
      */
-    public BigDecimal withdraw(BigDecimal amount) throws NoAccountSelectedException, InsufficientFundsException, InvaidAmountException {
+    public BigDecimal withdraw(BigDecimal amount) throws NoAccountSelectedException, InsufficientFundsException, InvalidAmountException {
         if (currentAccountID == null) {
             throw new NoAccountSelectedException();
         }
