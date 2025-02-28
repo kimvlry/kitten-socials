@@ -4,8 +4,6 @@ out/
 !**/src/test/**/out/
 .idea
 
-### Gradle ###
-.gradle
 **/build/
 !src/**/build/
 
