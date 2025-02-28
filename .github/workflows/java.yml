@@ -17,6 +17,6 @@ jobs:
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v1
         with:
-          arguments: :atm_simulator:build
+          arguments: build
 
 
