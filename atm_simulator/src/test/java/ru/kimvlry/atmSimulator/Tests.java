@@ -15,27 +15,27 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BankAccountTests {
     @Test
-    void NonPositiveAmountToDepositShouldFail() {
+    void nonPositiveAmountToDepositShouldFail() {
         BankAccount bankAccount = new BankAccount("777");
         assertThrows(InvalidAmountException.class, () -> bankAccount.deposit(BigDecimal.valueOf(-100)));
     }
 
     @Test
-    void NonPositiveAmountToWithdrawShouldFail() {
+    void nonPositiveAmountToWithdrawShouldFail() {
         BankAccount bankAccount = new BankAccount("777");
         assertDoesNotThrow(() -> bankAccount.deposit(BigDecimal.valueOf(101)));
         assertThrows(InvalidAmountException.class, () -> bankAccount.withdraw(BigDecimal.valueOf(-100)));
     }
 
     @Test
-    void PositiveAmountToWithdrawShouldPassWithSufficientFunds() {
+    void positiveAmountToWithdrawShouldPassWithSufficientFunds() {
         BankAccount bankAccount = new BankAccount("777");
         assertDoesNotThrow(() -> bankAccount.deposit(BigDecimal.valueOf(101)));
         assertDoesNotThrow(() -> bankAccount.withdraw(BigDecimal.valueOf(100)));
     }
 
     @Test
-    void PositiveAmountToWithdrawShouldFailWithInsufficientFunds() {
+    void positiveAmountToWithdrawShouldFailWithInsufficientFunds() {
         BankAccount bankAccount = new BankAccount("777");
         assertDoesNotThrow(() -> bankAccount.deposit(BigDecimal.valueOf(101)));
         assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(BigDecimal.valueOf(102)));
@@ -45,7 +45,7 @@ class BankAccountTests {
 
 class UserTest {
     @Test
-    void SwitchingToInvalidAccountIDShouldFail() {
+    void switchingToInvalidAccountIDShouldFail() {
         User user = new User();
         String first_account = user.createAccount();
         String invalidID = first_account + "invalid";
@@ -53,20 +53,20 @@ class UserTest {
     }
 
     @Test
-    void SwitchingToValidAccountIDShouldPass() {
+    void switchingToValidAccountIDShouldPass() {
         User user = new User();
         String first_account = user.createAccount();
         assertDoesNotThrow(() -> user.switchAccount(first_account));
     }
 
     @Test
-    void GetBalanceOperationWithNoAccountSelectedShouldFail() {
+    void getBalanceOperationWithNoAccountSelectedShouldFail() {
         User user = new User();
         assertThrows(NoAccountSelectedException.class, () -> user.getBalance());
     }
 
     @Test
-    void GetBalanceOperationWithCurrentAccountSelectedShouldPass() {
+    void getBalanceOperationWithCurrentAccountSelectedShouldPass() {
         User user = new User();
         String first_account = user.createAccount();
         assertDoesNotThrow(() -> user.switchAccount(first_account));
@@ -74,13 +74,13 @@ class UserTest {
     }
 
     @Test
-    void DepositWithNoAccountSelectedShouldFail() {
+    void depositWithNoAccountSelectedShouldFail() {
         User user = new User();
         assertThrows(NoAccountSelectedException.class, () -> user.withdraw(BigDecimal.valueOf(100)));
     }
 
     @Test
-    void NegativeDepositWithCurrentAccountSelectedShouldFail() {
+    void negativeDepositWithCurrentAccountSelectedShouldFail() {
         User user = new User();
         String first_account = user.createAccount();
         assertDoesNotThrow(() -> user.switchAccount(first_account));
@@ -88,7 +88,7 @@ class UserTest {
     }
 
     @Test
-    void NonNegativeDepositWithCurrentAccountSelectedShouldPass() {
+    void nonNegativeDepositWithCurrentAccountSelectedShouldPass() {
         User user = new User();
         String first_account = user.createAccount();
         assertDoesNotThrow(() -> user.switchAccount(first_account));
@@ -96,14 +96,14 @@ class UserTest {
     }
 
     @Test
-    void WithdrawWithNoAccountSelectedShouldFail() {
+    void withdrawWithNoAccountSelectedShouldFail() {
         User user = new User();
         String first_account = user.createAccount();
         assertThrows(NoAccountSelectedException.class, () -> user.withdraw(BigDecimal.valueOf(100)));
     }
 
     @Test
-    void NegativeAmountWithdrawShouldFail() {
+    void negativeAmountWithdrawShouldFail() {
         User user = new User();
         String first_account = user.createAccount();
         assertDoesNotThrow(() -> user.switchAccount(first_account));
@@ -111,7 +111,7 @@ class UserTest {
     }
 
     @Test
-    void WithdrawWithInsufficientFundsShouldFail() {
+    void withdrawWithInsufficientFundsShouldFail() {
         User user = new User();
         String first_account = user.createAccount();
         assertDoesNotThrow(() -> user.switchAccount(first_account));
@@ -120,7 +120,7 @@ class UserTest {
     }
 
     @Test
-    void NonNegativeAmountWithdrawWithSufficientFundsAndAccountSelectedShouldPass() {
+    void nonNegativeAmountWithdrawWithSufficientFundsAndAccountSelectedShouldPass() {
         User user = new User();
         String first_account = user.createAccount();
         assertDoesNotThrow(() -> user.switchAccount(first_account));
@@ -129,13 +129,13 @@ class UserTest {
     }
 
     @Test
-    void GetTransactionHistoryWithNoAccountSelectedShouldFail() {
+    void getTransactionHistoryWithNoAccountSelectedShouldFail() {
         User user = new User();
         assertThrows(NoAccountSelectedException.class, () -> user.getTransactionHistory());
     }
 
     @Test
-    void GetTransactionHistoryWithCurrentAccountSelectedShouldPass() {
+    void getTransactionHistoryWithCurrentAccountSelectedShouldPass() {
         User user = new User();
         String first_account = user.createAccount();
         assertDoesNotThrow(() -> user.switchAccount(first_account));
