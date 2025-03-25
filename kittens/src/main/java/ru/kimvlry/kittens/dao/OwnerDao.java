@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import ru.kimvlry.kittens.entities.Owner;
 import ru.kimvlry.kittens.exceptions.DatabaseException;
-import ru.kimvlry.kittens.exceptions.EntityInstanceNotFoundException;
 
 import java.util.List;
 
@@ -33,52 +32,36 @@ public class OwnerDao implements Dao<Owner> {
     }
 
     @Override
-    public void deleteById(long id) throws DatabaseException, EntityInstanceNotFoundException {
+    public void deleteById(long id) throws DatabaseException {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
             Owner owner = em.find(Owner.class, id);
-            if (owner != null) {
-                em.remove(owner);
-            } else {
-                throw new EntityInstanceNotFoundException("Owner");
-            }
+            em.remove(owner);
             transaction.commit();
 
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            if (e instanceof EntityInstanceNotFoundException) {
-                throw e;
-            } else {
-                throw new DatabaseException("deletion", e.getMessage());
-            }
+            throw new DatabaseException("deletion", e.getMessage());
         }
     }
 
     @Override
-    public void deleteByEntity(Owner entity) throws DatabaseException, EntityInstanceNotFoundException {
+    public void deleteByEntity(Owner entity) throws DatabaseException {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
             Owner owner = em.find(Owner.class, entity.getId());
-            if (owner != null) {
-                em.remove(owner);
-            } else {
-                throw new EntityInstanceNotFoundException("Owner");
-            }
+            em.remove(owner);
             transaction.commit();
 
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            if (e instanceof EntityInstanceNotFoundException) {
-                throw e;
-            } else {
-                throw new DatabaseException("deletion", e.getMessage());
-            }
+            throw new DatabaseException("deletion", e.getMessage());
         }
     }
 
