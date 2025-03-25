@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import ru.kimvlry.kittens.entities.Kitten;
 import ru.kimvlry.kittens.exceptions.DatabaseException;
-import ru.kimvlry.kittens.exceptions.KittenNotFoundException;
+import ru.kimvlry.kittens.exceptions.EntityInstanceNotFoundException;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class KittenDao implements Dao<Kitten> {
     }
 
     @Override
-    public void deleteById(long id) throws DatabaseException, KittenNotFoundException {
+    public void deleteById(long id) throws DatabaseException, EntityInstanceNotFoundException {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
@@ -45,7 +45,7 @@ public class KittenDao implements Dao<Kitten> {
             if (kitten != null) {
                 em.remove(kitten);
             } else {
-                throw new KittenNotFoundException();
+                throw new EntityInstanceNotFoundException("Kitten");
             }
             transaction.commit();
 
@@ -53,7 +53,7 @@ public class KittenDao implements Dao<Kitten> {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            if (e instanceof KittenNotFoundException) {
+            if (e instanceof EntityInstanceNotFoundException) {
                 throw e;
             } else {
                 throw new DatabaseException("deletion", e.getMessage());
@@ -62,7 +62,7 @@ public class KittenDao implements Dao<Kitten> {
     }
 
     @Override
-    public void deleteByEntity(Kitten entity) throws DatabaseException, KittenNotFoundException {
+    public void deleteByEntity(Kitten entity) throws DatabaseException, EntityInstanceNotFoundException {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
@@ -70,7 +70,7 @@ public class KittenDao implements Dao<Kitten> {
             if (kitten != null) {
                 em.remove(kitten);
             } else {
-                throw new KittenNotFoundException();
+                throw new EntityInstanceNotFoundException("Kitten");
             }
             transaction.commit();
 
@@ -78,7 +78,7 @@ public class KittenDao implements Dao<Kitten> {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            if (e instanceof KittenNotFoundException) {
+            if (e instanceof EntityInstanceNotFoundException) {
                 throw e;
             } else {
                 throw new DatabaseException("deletion", e.getMessage());
