@@ -10,6 +10,10 @@ import java.util.List;
 public class OwnerDao implements Dao<Owner> {
     private EntityManager em;
 
+    public OwnerDao(EntityManager em) {
+        this.em = em;
+    }
+
     @Override
     public Owner save(Owner entity) throws DatabaseException {
         EntityTransaction transaction = em.getTransaction();
