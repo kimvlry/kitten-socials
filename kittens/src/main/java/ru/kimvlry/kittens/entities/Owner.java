@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import jakarta.persistence.*;
 
-
-
 @Entity
 @Table(name = "owners")
 public class Owner {
@@ -19,7 +17,7 @@ public class Owner {
     @Column(name = "birth_timestamp")
     private LocalDateTime birthTimestamp;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Kitten> ownedKittens;
 
     public Set<Kitten> getOwnedKittens() {
