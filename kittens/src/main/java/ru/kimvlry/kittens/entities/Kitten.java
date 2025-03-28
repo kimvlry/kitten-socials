@@ -13,16 +13,16 @@ public class Kitten {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp birthTimestamp;
 
-    @Column()
+    @Column(name = "breed")
     private KittenBreed breed;
 
-    @Column
+    @Column(name = "coat_color")
     private KittenCoatColor coatColor;
 
     @ManyToOne
@@ -59,5 +59,33 @@ public class Kitten {
 
     public Owner getOwner() {
         return owner;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBirthTimestamp(Timestamp birthTimestamp) {
+        this.birthTimestamp = birthTimestamp;
+    }
+
+    public void setBreed(KittenBreed breed) {
+        this.breed = breed;
+    }
+
+    public void setCoatColor(KittenCoatColor coatColor) {
+        this.coatColor = coatColor;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public void setFriends(Set<Kitten> friends) {
+        this.friends = friends;
     }
 }

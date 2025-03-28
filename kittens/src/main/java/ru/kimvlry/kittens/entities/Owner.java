@@ -3,7 +3,6 @@ package ru.kimvlry.kittens.entities;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -13,7 +12,7 @@ public class Owner {
     @GeneratedValue
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
     @Column
@@ -37,5 +36,21 @@ public class Owner {
 
     public Long getId() {
         return id;
+    }
+
+    public void setOwnedKittens(Set<Kitten> ownedKittens) {
+        OwnedKittens = ownedKittens;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBirthTimestamp(Timestamp birthTimestamp) {
+        this.birthTimestamp = birthTimestamp;
     }
 }
