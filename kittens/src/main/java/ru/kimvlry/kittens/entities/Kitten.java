@@ -60,6 +60,10 @@ public class Kitten {
         return owner;
     }
 
+    public Set<Kitten> getFriends() {
+        return friends;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
