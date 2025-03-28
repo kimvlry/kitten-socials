@@ -1,10 +1,10 @@
 package ru.kimvlry.kittens.entities;
 
-import jakarta.persistence.*;
-
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Set;
+import jakarta.persistence.*;
+
+
 
 @Entity
 @Table(name = "owners")
