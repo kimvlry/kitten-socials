@@ -1,11 +1,12 @@
 package ru.kimvlry.kittens.dao;
 
+import java.util.List;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import ru.kimvlry.kittens.entities.Kitten;
+import ru.kimvlry.kittens.entities.Owner;
 import ru.kimvlry.kittens.exceptions.DatabaseException;
-
-import java.util.List;
 
 public class KittenDao implements Dao<Kitten> {
     private final EntityManager em;
@@ -18,14 +19,29 @@ public class KittenDao implements Dao<Kitten> {
     public Kitten save(Kitten entity) throws DatabaseException {
         EntityTransaction transaction = em.getTransaction();
         try {
-            transaction.begin();
-            if (entity.getId() == null) {
-                em.persist(entity);
-            } else {
-                em.merge(entity);
+            Owner owner = em.find(Owner.class, entity.getOwner().getId());
+            if (owner == null) {
+                throw new DatabaseException("saving", "Owner not found");
             }
-            transaction.commit();
-            return entity;
+
+            transaction.begin();
+            if (entity.getId() != null) {
+                Kitten managedKitten = em.merge(entity);
+
+                if (!managedKitten.getOwner().equals(owner)) {
+                    managedKitten.getOwner().getOwnedKittens().remove(managedKitten);
+                    owner.getOwnedKittens().add(managedKitten);
+                    managedKitten.setOwner(owner);
+                }
+                transaction.commit();
+                return managedKitten;
+            } else {
+                owner.getOwnedKittens().add(entity);
+                entity.setOwner(owner);
+                em.persist(entity);
+                transaction.commit();
+                return entity;
+            }
 
         } catch (Exception e) {
             if (transaction.isActive()) {
