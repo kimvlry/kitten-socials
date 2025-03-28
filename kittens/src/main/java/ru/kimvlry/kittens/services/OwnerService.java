@@ -44,6 +44,9 @@ public class OwnerService {
     }
 
     public Owner update(Owner newEntity) throws DatabaseException, InvalidInstanceException {
+        if (newEntity.getName() == null || newEntity.getOwnedKittens().isEmpty()) {
+            throw new InvalidInstanceException("null is invalid value for 'name' and 'ownedKittens' attributes of Owner entity instance");
+        }
         return addOwner(newEntity);
     }
 
