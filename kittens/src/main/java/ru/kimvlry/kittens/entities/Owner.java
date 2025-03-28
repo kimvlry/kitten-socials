@@ -3,6 +3,7 @@ package ru.kimvlry.kittens.entities;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -12,21 +13,20 @@ public class Owner {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column
-    private Timestamp birthTimestamp;
+    @Column(name = "birth_timestamp")
+    private LocalDateTime birthTimestamp;
 
-    @OneToMany
-    @JoinColumn(name = "owned_kitten_id", nullable = false)
-    private Set<Kitten> OwnedKittens;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<Kitten> ownedKittens;
 
     public Set<Kitten> getOwnedKittens() {
-        return OwnedKittens;
+        return ownedKittens;
     }
 
-    public Timestamp getBirthTimestamp() {
+    public LocalDateTime getBirthTimestamp() {
         return birthTimestamp;
     }
 
@@ -39,7 +39,7 @@ public class Owner {
     }
 
     public void setOwnedKittens(Set<Kitten> ownedKittens) {
-        OwnedKittens = ownedKittens;
+        this.ownedKittens = ownedKittens;
     }
 
     public void setId(Long id) {
@@ -50,7 +50,7 @@ public class Owner {
         this.name = name;
     }
 
-    public void setBirthTimestamp(Timestamp birthTimestamp) {
+    public void setBirthTimestamp(LocalDateTime birthTimestamp) {
         this.birthTimestamp = birthTimestamp;
     }
 }

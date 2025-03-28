@@ -16,16 +16,16 @@ public class Kitten {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp birthTimestamp;
+    @Column(name = "birth_timestamp")
+    private LocalDateTime birthTimestamp;
 
-    @Column(name = "breed")
+    @Enumerated(EnumType.STRING)
     private KittenBreed breed;
 
-    @Column(name = "coat_color")
+    @Enumerated(EnumType.STRING)
     private KittenCoatColor coatColor;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id", nullable = false)
     private Owner owner;
 
@@ -45,7 +45,7 @@ public class Kitten {
         return name;
     }
 
-    public Timestamp getBirthDateTime() {
+    public LocalDateTime getBirthDateTime() {
         return birthTimestamp;
     }
 
@@ -69,7 +69,7 @@ public class Kitten {
         this.name = name;
     }
 
-    public void setBirthTimestamp(Timestamp birthTimestamp) {
+    public void setBirthTimestamp(LocalDateTime birthTimestamp) {
         this.birthTimestamp = birthTimestamp;
     }
 
