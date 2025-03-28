@@ -44,6 +44,9 @@ public class KittenService {
     }
 
     public Kitten update(Kitten newEntity) throws DatabaseException, InvalidInstanceException {
+        if (newEntity.getName() == null || newEntity.getOwner() == null) {
+            throw new InvalidInstanceException("null is invalid value for 'name' and 'owner' attributes of Kitten entity instance");
+        }
         return addKitten(newEntity);
     }
 
