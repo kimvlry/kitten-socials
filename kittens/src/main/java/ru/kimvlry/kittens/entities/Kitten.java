@@ -1,6 +1,7 @@
 package ru.kimvlry.kittens.entities;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.*;
 
@@ -34,7 +35,7 @@ public class Kitten {
             joinColumns = @JoinColumn(name = "kitten1_id"),
             inverseJoinColumns = @JoinColumn(name = "kitten2_id")
     )
-    private Set<Kitten> friends;
+    private Set<Kitten> friends = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -72,8 +73,9 @@ public class Kitten {
         this.name = name;
     }
 
-    public void setBirthTimestamp(LocalDateTime birthTimestamp) {
+    public LocalDateTime setBirthTimestamp(LocalDateTime birthTimestamp) {
         this.birthTimestamp = birthTimestamp;
+        return birthTimestamp;
     }
 
     public void setBreed(KittenBreed breed) {
