@@ -1,11 +1,10 @@
 package ru.kimvlry.kittens.dao;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import ru.kimvlry.kittens.entities.Owner;
 import ru.kimvlry.kittens.exceptions.DatabaseException;
-
 import java.util.List;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 public class OwnerDao implements Dao<Owner> {
     private EntityManager em;
@@ -74,6 +73,7 @@ public class OwnerDao implements Dao<Owner> {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
+            em.createQuery("DELETE FROM Kitten").executeUpdate();
             em.createQuery("DELETE from Owner").executeUpdate();
             transaction.commit();
 
