@@ -15,6 +15,12 @@ subprojects {
 
     dependencies {
         testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+        testImplementation("org.testcontainers:testcontainers:1.19.3")
+        testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+        testImplementation("org.testcontainers:postgresql:1.19.3")
+        testImplementation("org.slf4j:slf4j-simple:2.0.9")
+        implementation("org.hibernate:hibernate-core:6.6.11.Final")
+        implementation("org.postgresql:postgresql:42.7.3")
     }
 
     tasks.test {
