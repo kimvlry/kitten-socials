@@ -6,7 +6,7 @@ public enum KittenCoatColor {
     CAPPUCCINO,
     MOCHA,
     MACCHIATO,
-    FRAPPÉ,
+    FRAPPE,
     AMERICANO,
     RISTRETTO,
     CARAMEL,
