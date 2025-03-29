@@ -38,7 +38,7 @@ class Tests {
 
     @BeforeAll
     static void setupAll() {
-        emf = Persistence.createEntityManagerFactory("meow", Map.of(
+        emf = Persistence.createEntityManagerFactory("kittens_tests", Map.of(
                 "jakarta.persistence.jdbc.url", postgres.getJdbcUrl(),
                 "jakarta.persistence.jdbc.user", postgres.getUsername(),
                 "jakarta.persistence.jdbc.password", postgres.getPassword(),
