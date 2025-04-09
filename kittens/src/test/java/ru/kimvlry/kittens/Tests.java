@@ -257,13 +257,14 @@ class Tests {
         Kitten cat2 = createTestKitten("Kotik", owner);
         kittenService.addKitten(cat2);
 
-        em.getTransaction().begin();
-        cat1.getFriends().add(cat2);
-        cat2.getFriends().add(cat1);
-        em.getTransaction().commit();
+        kittenService.addFriendship(cat1, cat2);
 
         Kitten updated = kittenService.getById(cat1.getId());
         assertEquals(1, updated.getFriends().size());
+
+        Kitten other = kittenService.getById(cat2.getId());
+        assertEquals(1, other.getFriends().size());
+        assertEquals(cat1.getId(), other.getFriends().iterator().next().getId());
     }
 
     @Test
