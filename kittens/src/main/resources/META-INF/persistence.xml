@@ -23,7 +23,7 @@
     </persistence-unit>
 
 
-    <!-- kittens-demo -->
+    <!-- demo db -->
     <persistence-unit name="kittens_demo" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
@@ -31,7 +31,7 @@
         <class>ru.kimvlry.kittens.entities.Owner</class>
 
         <properties>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/kittens_demo"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/kittens_db"/>
             <property name="jakarta.persistence.jdbc.user" value="postgres"/>
             <property name="jakarta.persistence.jdbc.password" value="postgres"/>
 
@@ -41,9 +41,6 @@
 
             <property name="hibernate.jdbc.batch_size" value="30"/>
             <property name="hibernate.connection.pool_size" value="10"/>
-            <property name="hibernate.cache.use_second_level_cache" value="true"/>
-            <property name="hibernate.cache.region.factory_class"
-                      value="org.hibernate.cache.ehcache.EhCacheRegionFactory"/>
         </properties>
     </persistence-unit>
 </persistence>

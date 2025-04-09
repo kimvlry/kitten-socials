@@ -9,8 +9,8 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_DB: kittens_db
-      POSTGRES_USER: test_user
-      POSTGRES_PASSWORD: test_pass
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

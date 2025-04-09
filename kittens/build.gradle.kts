@@ -5,7 +5,7 @@ plugins {
 }
 
 flyway {
-    url = "jdbc:postgresql://localhost:5432/kittens_demo"
+    url = "jdbc:postgresql://localhost:5432/kittens_db"
     user = "postgres"
     password = "postgres"
     locations = arrayOf("classpath:db/migration")
