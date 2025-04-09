@@ -20,9 +20,11 @@ public class Kitten {
     private LocalDateTime birthTimestamp;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "breed")
     private KittenBreed breed;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "coat_color")
     private KittenCoatColor coatColor;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -91,6 +93,6 @@ public class Kitten {
     }
 
     public void setFriends(Set<Kitten> friends) {
-        this.friends = friends;
+        this.friends = new HashSet<>(friends);
     }
 }

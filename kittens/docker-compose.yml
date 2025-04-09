@@ -1,14 +1,12 @@
-version: "3.8"
-
 services:
   postgres:
-    image: postgres:15
-    container_name: kittens_db
+    image: postgres:15-alpine
+    container_name: kittens_demo
     restart: always
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: kittens_db
+      POSTGRES_DB: kittens_demo
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
