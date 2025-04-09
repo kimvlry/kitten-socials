@@ -14,9 +14,8 @@ CREATE TABLE IF NOT EXISTS kittens
     owner_id        BIGINT REFERENCES owners (id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS kitten_friends
-(
-    kitten_id BIGINT NOT NULL REFERENCES kittens (id) ON DELETE CASCADE,
-    friend_id BIGINT NOT NULL REFERENCES kittens (id) ON DELETE CASCADE,
-    PRIMARY KEY (kitten_id, friend_id)
+CREATE TABLE IF NOT EXISTS friendship (
+    kitten1_id BIGINT NOT NULL REFERENCES kittens (id) ON DELETE CASCADE,
+    kitten2_id BIGINT NOT NULL REFERENCES kittens (id) ON DELETE CASCADE,
+    PRIMARY KEY (kitten1_id, kitten2_id)
 );
