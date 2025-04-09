@@ -8,6 +8,7 @@ import ru.kimvlry.kittens.dao.KittenDao;
 import ru.kimvlry.kittens.dao.OwnerDao;
 import ru.kimvlry.kittens.entities.Kitten;
 import ru.kimvlry.kittens.entities.KittenBreed;
+import ru.kimvlry.kittens.entities.KittenCoatColor;
 import ru.kimvlry.kittens.entities.Owner;
 import ru.kimvlry.kittens.exceptions.DatabaseException;
 import ru.kimvlry.kittens.exceptions.InvalidInstanceException;
@@ -51,6 +52,7 @@ public class Main {
             whiskers.setName("Whiskers");
             whiskers.setBirthTimestamp(LocalDateTime.now());
             whiskers.setBreed(KittenBreed.SIBERIAN);
+            whiskers.setCoatColor(KittenCoatColor.CAPPUCCINO);
             whiskers.setOwner(alice);
             alice.setOwnedKittens(Set.of(whiskers));
 
@@ -58,6 +60,7 @@ public class Main {
             muffin.setName("Muffin");
             muffin.setBirthTimestamp(LocalDateTime.now());
             muffin.setBreed(KittenBreed.MAINE_COON);
+            muffin.setCoatColor(KittenCoatColor.LATTE);
             muffin.setOwner(bob);
             bob.setOwnedKittens(Set.of(muffin));
 

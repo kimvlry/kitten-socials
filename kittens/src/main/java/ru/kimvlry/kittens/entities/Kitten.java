@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.*;
-
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Table(name = "kittens")
@@ -20,12 +21,17 @@ public class Kitten {
     private LocalDateTime birthTimestamp;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "breed")
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "breed", columnDefinition = "kitten_breed")
     private KittenBreed breed;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "coat_color")
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "coat_color", columnDefinition = "kitten_coat_color")
     private KittenCoatColor coatColor;
+
+    @Column(name = "purr_loudness_rate")
+    private int purrLoudnessRate;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id", nullable = false)
@@ -59,6 +65,10 @@ public class Kitten {
         return coatColor;
     }
 
+    public int getPurrLoudnessRate() {
+        return purrLoudnessRate;
+    }
+
     public Owner getOwner() {
         return owner;
     }
@@ -86,6 +96,10 @@ public class Kitten {
 
     public void setCoatColor(KittenCoatColor coatColor) {
         this.coatColor = coatColor;
+    }
+
+    public void setPurrLoudnessRate(int purrLoudness) {
+        this.purrLoudnessRate = purrLoudness;
     }
 
     public void setOwner(Owner owner) {
