@@ -2,6 +2,7 @@ package ru.kimvlry.kittens.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,20 @@ public class KittenController {
         this.kittenService = kittenService;
     }
 
+    @GetMapping("/api")
+    public String hello() {
+        return "Hello from kittens!";
+    }
+
     @Operation(
             summary = "Search kittens with filter",
             description = "Search kittens using flexible filters like name, breed, coat color, birth date, purr loudness, owner, and friends."
     )
     @PostMapping("/search")
-    public Page<KittenDto> searchKittens(@RequestBody KittenFilter filter, Pageable pageable) {
+    public Page<KittenDto> searchKittens(
+            @RequestBody KittenFilter filter,
+            @ParameterObject Pageable pageable
+    ) {
         return kittenService.getKittensFiltered(filter, pageable);
     }
 }
