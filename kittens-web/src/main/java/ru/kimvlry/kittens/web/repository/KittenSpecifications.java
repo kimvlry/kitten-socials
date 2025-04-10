@@ -6,7 +6,7 @@ import ru.kimvlry.kittens.entities.KittenBreed;
 import ru.kimvlry.kittens.entities.KittenCoatColor;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 public class KittenSpecifications {
     public static Specification<Kitten> hasName(String name) {
@@ -14,40 +14,52 @@ public class KittenSpecifications {
                 name == null ? null : cb.equal(root.get("name"), name);
     }
 
-    public static Specification<Kitten> hasBreeds(List<KittenBreed> breeds) {
+    public static Specification<Kitten> hasBreedIn(Set<KittenBreed> breeds) {
         return (root, query, cb) ->
                 breeds == null || breeds.isEmpty() ? null : root.get("breed").in(breeds);
     }
 
-    public static Specification<Kitten> hasCoatColors(List<KittenCoatColor> colors) {
+    public static Specification<Kitten> hasCoatColorIn(Set<KittenCoatColor> colors) {
         return (root, query, cb) ->
                 colors == null || colors.isEmpty() ? null : root.get("coatColor").in(colors);
     }
 
-    public static Specification<Kitten> purrRateBetween(Integer min, Integer max) {
+    public static Specification<Kitten> hasPurrRateBetween(Integer min, Integer max) {
         return (root, query, cb) -> {
-            if (min != null && max != null) return cb.between(root.get("purrLoudnessRate"), min, max);
-            if (min != null) return cb.greaterThanOrEqualTo(root.get("purrLoudnessRate"), min);
-            if (max != null) return cb.lessThanOrEqualTo(root.get("purrLoudnessRate"), max);
+            if (min != null && max != null) {
+                return cb.between(root.get("purrLoudnessRate"), min, max);
+            }
+            if (min != null) {
+                return cb.greaterThanOrEqualTo(root.get("purrLoudnessRate"), min);
+            }
+            if (max != null) {
+                return cb.lessThanOrEqualTo(root.get("purrLoudnessRate"), max);
+            }
             return null;
         };
     }
 
     public static Specification<Kitten> bornBetween(LocalDateTime from, LocalDateTime to) {
         return (root, query, cb) -> {
-            if (from != null && to != null) return cb.between(root.get("birthTimestamp"), from, to);
-            if (from != null) return cb.greaterThanOrEqualTo(root.get("birthTimestamp"), from);
-            if (to != null) return cb.lessThanOrEqualTo(root.get("birthTimestamp"), to);
+            if (from != null && to != null) {
+                return cb.between(root.get("birthTimestamp"), from, to);
+            }
+            if (from != null) {
+                return cb.greaterThanOrEqualTo(root.get("birthTimestamp"), from);
+            }
+            if (to != null) {
+                return cb.lessThanOrEqualTo(root.get("birthTimestamp"), to);
+            }
             return null;
         };
     }
 
-    public static Specification<Kitten> hasOwners(List<Long> ownerIds) {
+    public static Specification<Kitten> hasOwnerIn(Set<Long> ownerIds) {
         return (root, query, cb) ->
                 ownerIds == null || ownerIds.isEmpty() ? null : root.get("owner").get("id").in(ownerIds);
     }
 
-    public static Specification<Kitten> hasFriends(List<Long> friendIds) {
+    public static Specification<Kitten> hasFriends(Set<Long> friendIds) {
         return (root, query, cb) -> {
             if (friendIds == null || friendIds.isEmpty()) {
                 return null;
