@@ -1,0 +1,192 @@
+openapi: "3.0.0"
+info:
+  title: Kittens API
+  version: "1.0.0"
+  description: API for retrieving information about kittens and their owners.
+servers:
+  - url: http://localhost:8080
+paths:
+  /kittens:
+    get:
+      summary: Retrieve a list of kittens
+      description: Retrieve a paginated list of kittens with optional filtering by breed or coat color.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: Page number for pagination.
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+          description: Number of records per page.
+        - in: query
+          name: breed
+          schema:
+            type: string
+            enum:
+              - BRITISH_SHORTHAIR
+              - PERSIAN
+              - MAINE_COON
+              - SIAMESE
+              - RAGDOLL
+              - ABYSSINIAN
+              - SIBERIAN
+              - BENGAL
+              - CORNISH_REX
+              - SPHYNX
+              - TOYGER
+              - MUNCHKIN
+              - SCOTTISH_FOLD
+          description: Filter kittens by breed.
+        - in: query
+          name: coatColor
+          schema:
+            type: string
+            enum:
+              - ESPRESSO
+              - LATTE
+              - CAPPUCCINO
+              - MOCHA
+              - MACCHIATO
+              - FRAPPE
+              - AMERICANO
+              - RISTRETTO
+              - CARAMEL
+              - CORTADO
+          description: Filter kittens by coat color.
+      responses:
+        "200":
+          description: A paginated list of kittens.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Kitten"
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+  /kittens/{id}:
+    get:
+      summary: Retrieve a kitten by ID
+      description: Retrieve detailed information of a specific kitten.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the kitten to retrieve.
+      responses:
+        "200":
+          description: Details of the kitten.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Kitten"
+        "404":
+          description: Kitten not found.
+  /owners:
+    get:
+      summary: Retrieve a list of owners
+      description: Retrieve a list of all owners.
+      responses:
+        "200":
+          description: List of owners.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Owner"
+  /owners/{id}:
+    get:
+      summary: Retrieve an owner by ID
+      description: Retrieve detailed information of a specific owner.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the owner to retrieve.
+      responses:
+        "200":
+          description: Details of the owner.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Owner"
+        "404":
+          description: Owner not found.
+components:
+  schemas:
+    Kitten:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        birthTimestamp:
+          type: string
+          format: date-time
+        breed:
+          type: string
+          enum:
+            - BRITISH_SHORTHAIR
+            - PERSIAN
+            - MAINE_COON
+            - SIAMESE
+            - RAGDOLL
+            - ABYSSINIAN
+            - SIBERIAN
+            - BENGAL
+            - CORNISH_REX
+            - SPHYNX
+            - TOYGER
+            - MUNCHKIN
+            - SCOTTISH_FOLD
+        coatColor:
+          type: string
+          enum:
+            - ESPRESSO
+            - LATTE
+            - CAPPUCCINO
+            - MOCHA
+            - MACCHIATO
+            - FRAPPE
+            - AMERICANO
+            - RISTRETTO
+            - CARAMEL
+            - CORTADO
+        purrLoudnessRate:
+          type: integer
+        owner:
+          $ref: "#/components/schemas/Owner"
+        friends:
+          type: array
+          items:
+            $ref: "#/components/schemas/Kitten"
+    Owner:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        birthTimestamp:
+          type: string
+          format: date-time
+        ownedKittens:
+          type: array
+          items:
+            $ref: "#/components/schemas/Kitten"
