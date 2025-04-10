@@ -25,3 +25,7 @@ dependencies {
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
+
+configurations.all {
+    exclude(group = "org.slf4j", module = "slf4j-simple")
+}
