@@ -115,7 +115,7 @@ class tests {
                 6, 300L, Set.of()
         );
 
-        Pageable pageable = PageRequest.of(1, 1); // page 1, size 1 (second page)
+        Pageable pageable = PageRequest.of(1, 1); 
         Page<KittenDto> page = new PageImpl<>(List.of(kitty), pageable, 2);
 
         when(kittenService.getKittensFiltered(any(KittenFilter.class), any(Pageable.class)))
