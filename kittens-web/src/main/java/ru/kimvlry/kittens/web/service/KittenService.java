@@ -4,15 +4,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.kimvlry.kittens.entities.Kitten;
-import ru.kimvlry.kittens.entities.KittenBreed;
-import ru.kimvlry.kittens.entities.KittenCoatColor;
 import ru.kimvlry.kittens.web.dto.KittenDto;
 import ru.kimvlry.kittens.web.dto.KittenMapper;
 import ru.kimvlry.kittens.web.repository.KittenRepository;
 import ru.kimvlry.kittens.web.repository.KittenSpecifications;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Service
 public class KittenService {
@@ -31,57 +28,41 @@ public class KittenService {
                 .orElseThrow(() -> new RuntimeException("Kitten not found"));
     }
 
-    public Page<KittenDto> getKittensFiltered(
-            String name,
-            Set<KittenBreed> breeds,
-            Set<KittenCoatColor> coatColors,
-            Integer minPurr,
-            Integer maxPurr,
-            LocalDateTime birthAfter,
-            LocalDateTime birthBefore,
-            Set<Long> ownerIds,
-            Set<Long> friendIds,
-            Pageable pageable
-    ) {
+    public Page<KittenDto> getKittensFiltered(KittenFilter filter, Pageable pageable) {
         Specification<Kitten> spec = Specification.where(null);
 
-        if (name != null) {
-            spec = spec.and(KittenSpecifications.hasName(name));
+        if (filter.getName() != null) {
+            spec = spec.and(KittenSpecifications.hasName(filter.getName()));
         }
 
-        if (breeds != null && !breeds.isEmpty()) {
-            spec = spec.and(KittenSpecifications.hasBreedIn(breeds));
+        if (filter.getBreeds() != null && !filter.getBreeds().isEmpty()) {
+            spec = spec.and(KittenSpecifications.hasBreedIn(filter.getBreeds()));
         }
 
-        if (coatColors != null && !coatColors.isEmpty()) {
-            spec = spec.and(KittenSpecifications.hasCoatColorIn(coatColors));
+        if (filter.getCoatColors() != null && !filter.getCoatColors().isEmpty()) {
+            spec = spec.and(KittenSpecifications.hasCoatColorIn(filter.getCoatColors()));
         }
 
-        if (minPurr != null) {
-            spec = spec.and(KittenSpecifications.hasPurrRateBetween(minPurr, 10));
+        if (filter.getMinPurr() != null || filter.getMaxPurr() != null) {
+            int min = filter.getMinPurr() != null ? filter.getMinPurr() : 0;
+            int max = filter.getMaxPurr() != null ? filter.getMaxPurr() : 10;
+            spec = spec.and(KittenSpecifications.hasPurrRateBetween(min, max));
         }
 
-        if (maxPurr != null) {
-            spec = spec.and(KittenSpecifications.hasPurrRateBetween(0, maxPurr));
+        if (filter.getBirthAfter() != null || filter.getBirthBefore() != null) {
+            LocalDateTime from = filter.getBirthAfter() != null ? filter.getBirthAfter() : LocalDateTime.MIN;
+            LocalDateTime to = filter.getBirthBefore() != null ? filter.getBirthBefore() : LocalDateTime.MAX;
+            spec = spec.and(KittenSpecifications.bornBetween(from, to));
         }
 
-        if (birthAfter != null) {
-            spec = spec.and(KittenSpecifications.bornBetween(birthAfter, LocalDateTime.MAX));
+        if (filter.getOwnerIds() != null && !filter.getOwnerIds().isEmpty()) {
+            spec = spec.and(KittenSpecifications.hasOwnerIn(filter.getOwnerIds()));
         }
 
-        if (birthBefore != null) {
-            spec = spec.and(KittenSpecifications.bornBetween(LocalDateTime.MIN, birthBefore));
+        if (filter.getFriendIds() != null && !filter.getFriendIds().isEmpty()) {
+            spec = spec.and(KittenSpecifications.hasFriends(filter.getFriendIds()));
         }
 
-        if (ownerIds != null && !ownerIds.isEmpty()) {
-            spec = spec.and(KittenSpecifications.hasOwnerIn(ownerIds));
-        }
-
-        if (friendIds != null && !friendIds.isEmpty()) {
-            spec = spec.and(KittenSpecifications.hasFriends(friendIds));
-        }
-
-        return kittenRepository.findAll(spec, pageable)
-                .map(kittenMapper::toDto);
+        return kittenRepository.findAll(spec, pageable).map(kittenMapper::toDto);
     }
 }
