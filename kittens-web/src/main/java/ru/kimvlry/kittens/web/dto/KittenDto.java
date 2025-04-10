@@ -4,7 +4,7 @@ import ru.kimvlry.kittens.entities.KittenBreed;
 import ru.kimvlry.kittens.entities.KittenCoatColor;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 public record KittenDto(
         Long id,
@@ -14,6 +14,6 @@ public record KittenDto(
         KittenCoatColor coatColor,
         int purrLoudnessRate,
         Long ownerId,
-        List<Long> friendIds
+        Set<Long> friendIds
 ) {}
 

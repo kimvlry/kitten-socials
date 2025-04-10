@@ -13,35 +13,15 @@ application {
 dependencies {
     implementation(project(":kittens"))
 
+    implementation("org.flywaydb:flyway-core:11.4.0")
+    implementation("org.flywaydb:flyway-database-postgresql:11.4.0")
+
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
-
-openApiGenerate {
-    generatorName.set("spring")
-    inputSpec.set("$rootDir/kitten-api/openapi.yaml")
-    outputDir.set("${layout.buildDirectory}/generated")
-    apiPackage.set("ru.kimvlry.api")
-    modelPackage.set("ru.kimvlry.dto")
-    invokerPackage.set("ru.kimvlry.invoker")
-    configOptions.set(
-        mapOf(
-            "interfaceOnly" to "true",
-            "useSpringBoot3" to "true",
-            "dateLibrary" to "java8"
-        )
-    )
-}
-
-sourceSets["main"].java.srcDirs(
-    "$projectDir/build/generated/src/main/java"
-)
-
-tasks.compileJava {
-    dependsOn("openApiGenerate")
 }
