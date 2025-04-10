@@ -4,7 +4,6 @@ import ru.kimvlry.kittens.entities.Kitten;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
