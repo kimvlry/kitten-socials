@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import ru.kimvlry.kittens.entities.Kitten;
 import ru.kimvlry.kittens.web.dto.KittenDto;
 import ru.kimvlry.kittens.web.dto.KittenMapper;
+import ru.kimvlry.kittens.web.exception.NonNullableException;
+import ru.kimvlry.kittens.web.exception.EntityNotFoundException;
 import ru.kimvlry.kittens.web.repository.KittenRepository;
 import ru.kimvlry.kittens.web.repository.KittenSpecifications;
 import ru.kimvlry.kittens.web.repository.OwnerRepository;
@@ -32,7 +34,7 @@ public class KittenService {
     public KittenDto getKittenById(Long id) {
         return kittenRepository.findById(id)
                 .map(kittenMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Kitten not found"));
+                .orElseThrow(() -> new EntityNotFoundException("kitten", id));
     }
 
     public Page<KittenDto> getKittensFiltered(KittenFilter filter, Pageable pageable) {
@@ -81,15 +83,17 @@ public class KittenService {
         kitten.setPurrLoudnessRate(dto.purrLoudnessRate());
 
         if (dto.ownerId() == null) {
-            throw new RuntimeException("Cannot set kitten's owner to null");
-        } else {
+            throw new NonNullableException("owner");
+        }
+        else {
             kitten.setOwner(ownerRepository.findById(dto.ownerId())
-                    .orElseThrow(() -> new RuntimeException("Owner not found")));
+                    .orElseThrow(() -> new EntityNotFoundException("owner", dto.ownerId())));
         }
 
         if (dto.friendIds() == null || dto.friendIds().isEmpty()) {
             kitten.setFriends(null);
-        } else {
+        }
+        else {
             Set<Kitten> friends = new HashSet<>(kittenRepository.findAllById(dto.friendIds()));
             kitten.setFriends(friends);
         }
@@ -98,7 +102,7 @@ public class KittenService {
     @Transactional
     public KittenDto updateKitten(Long id, KittenDto dto) {
         Kitten kitten = kittenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Kitten not found"));
+                .orElseThrow(() -> new EntityNotFoundException("kitten", id));
 
         fillKittenFromDto(kitten, dto);
         Kitten updated = kittenRepository.save(kitten);
@@ -117,7 +121,7 @@ public class KittenService {
     @Transactional
     public void deleteKitten(Long id) {
         if (!kittenRepository.existsById(id)) {
-            throw new RuntimeException("Kitten not found");
+            throw new EntityNotFoundException("kitten", id);
         }
         kittenRepository.deleteById(id);
     }
