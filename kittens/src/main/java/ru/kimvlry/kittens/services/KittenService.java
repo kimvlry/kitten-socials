@@ -57,4 +57,11 @@ public class KittenService {
     public List<Kitten> getAllKittens() {
         return dao.getAll();
     }
+
+    public Kitten addFriendship(Kitten cat1, Kitten cat2) throws DatabaseException {
+        cat1.getFriends().add(cat2);
+        cat2.getFriends().add(cat1);
+        dao.save(cat2);
+        return dao.save(cat1);
+    }
 }

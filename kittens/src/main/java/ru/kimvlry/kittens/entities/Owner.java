@@ -1,6 +1,7 @@
 package ru.kimvlry.kittens.entities;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.*;
 
@@ -8,7 +9,7 @@ import jakarta.persistence.*;
 @Table(name = "owners")
 public class Owner {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -37,7 +38,7 @@ public class Owner {
     }
 
     public void setOwnedKittens(Set<Kitten> ownedKittens) {
-        this.ownedKittens = ownedKittens;
+        this.ownedKittens = new HashSet<>(ownedKittens);
     }
 
     public void setId(Long id) {

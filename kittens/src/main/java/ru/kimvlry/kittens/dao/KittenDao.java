@@ -1,6 +1,8 @@
 package ru.kimvlry.kittens.dao;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -19,29 +21,36 @@ public class KittenDao implements Dao<Kitten> {
     public Kitten save(Kitten entity) throws DatabaseException {
         EntityTransaction transaction = em.getTransaction();
         try {
+            transaction.begin();
+
             Owner owner = em.find(Owner.class, entity.getOwner().getId());
             if (owner == null) {
                 throw new DatabaseException("saving", "Owner not found");
             }
 
-            transaction.begin();
+            Kitten managedKitten;
             if (entity.getId() != null) {
-                Kitten managedKitten = em.merge(entity);
-
-                if (!managedKitten.getOwner().equals(owner)) {
-                    managedKitten.getOwner().getOwnedKittens().remove(managedKitten);
-                    owner.getOwnedKittens().add(managedKitten);
-                    managedKitten.setOwner(owner);
-                }
-                transaction.commit();
-                return managedKitten;
+                managedKitten = em.merge(entity);
             } else {
-                owner.getOwnedKittens().add(entity);
-                entity.setOwner(owner);
-                em.persist(entity);
-                transaction.commit();
-                return entity;
+                managedKitten = entity;
+                em.persist(managedKitten);
             }
+
+            managedKitten.setOwner(owner);
+            owner.getOwnedKittens().add(managedKitten);
+
+            Set<Kitten> managedFriends = new HashSet<>();
+            for (Kitten friend : entity.getFriends()) {
+                Kitten managedFriend = em.find(Kitten.class, friend.getId());
+                if (managedFriend != null) {
+                    managedFriends.add(managedFriend);
+                    managedFriend.getFriends().add(managedKitten);
+                }
+            }
+            managedKitten.setFriends(managedFriends);
+
+            transaction.commit();
+            return managedKitten;
 
         } catch (Exception e) {
             if (transaction.isActive()) {
@@ -50,6 +59,7 @@ public class KittenDao implements Dao<Kitten> {
             throw new DatabaseException("saving", e.getMessage());
         }
     }
+
 
     @Override
     public void deleteById(long id) throws DatabaseException {

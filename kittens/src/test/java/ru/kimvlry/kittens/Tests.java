@@ -1,5 +1,6 @@
 package ru.kimvlry.kittens;
 
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.*;
 import ru.kimvlry.kittens.dao.KittenDao;
 import ru.kimvlry.kittens.dao.OwnerDao;
@@ -38,11 +39,20 @@ class Tests {
 
     @BeforeAll
     static void setupAll() {
+        postgres.start();
+
+        Flyway.configure()
+                .dataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
+                .locations("classpath:db/migration")
+                .load()
+                .migrate();
+
         emf = Persistence.createEntityManagerFactory("kittens_tests", Map.of(
                 "jakarta.persistence.jdbc.url", postgres.getJdbcUrl(),
                 "jakarta.persistence.jdbc.user", postgres.getUsername(),
                 "jakarta.persistence.jdbc.password", postgres.getPassword(),
-                "hibernate.hbm2ddl.auto", "create-drop"
+                "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect",
+                "hibernate.hbm2ddl.auto", "validate"
         ));
     }
 
@@ -65,15 +75,22 @@ class Tests {
 
     @AfterEach
     void cleanup() {
-        if (em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
+        if (em != null && em.isOpen()) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            em.close();
         }
-        em.close();
     }
 
     @AfterAll
     static void tearDownAll() {
-        emf.close();
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
+        if (postgres != null && postgres.isRunning()) {
+            postgres.stop();
+        }
     }
 
 
@@ -257,13 +274,14 @@ class Tests {
         Kitten cat2 = createTestKitten("Kotik", owner);
         kittenService.addKitten(cat2);
 
-        em.getTransaction().begin();
-        cat1.getFriends().add(cat2);
-        cat2.getFriends().add(cat1);
-        em.getTransaction().commit();
+        kittenService.addFriendship(cat1, cat2);
 
         Kitten updated = kittenService.getById(cat1.getId());
         assertEquals(1, updated.getFriends().size());
+
+        Kitten other = kittenService.getById(cat2.getId());
+        assertEquals(1, other.getFriends().size());
+        assertEquals(cat1.getId(), other.getFriends().iterator().next().getId());
     }
 
     @Test
@@ -283,6 +301,7 @@ class Tests {
         updateData.setName(catToTransfer.getName());
         updateData.setBirthTimestamp(catToTransfer.getBirthDateTime());
         updateData.setBreed(catToTransfer.getBreed());
+        updateData.setCoatColor(catToTransfer.getCoatColor());
         updateData.setOwner(newOwner);
 
         Kitten updatedKitten = kittenService.update(updateData);
@@ -332,6 +351,7 @@ class Tests {
         kitten.setName(kittenName);
         kitten.setBirthTimestamp(LocalDateTime.now());
         kitten.setBreed(KittenBreed.BRITISH_SHORTHAIR);
+        kitten.setCoatColor(KittenCoatColor.CAPPUCCINO);
 
         owner.setOwnedKittens(new HashSet<>());
         owner.getOwnedKittens().add(kitten);
@@ -354,6 +374,7 @@ class Tests {
         kitten.setName(name);
         kitten.setBirthTimestamp(LocalDateTime.now());
         kitten.setBreed(KittenBreed.BRITISH_SHORTHAIR);
+        kitten.setCoatColor(KittenCoatColor.LATTE);
         kitten.setOwner(owner);
         return kitten;
     }
