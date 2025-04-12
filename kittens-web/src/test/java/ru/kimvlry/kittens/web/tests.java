@@ -20,9 +20,10 @@ import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = KittenController.class)
@@ -54,7 +55,7 @@ class tests {
         when(kittenService.getKittensFiltered(any(KittenFilter.class), any(Pageable.class)))
                 .thenReturn(page);
 
-        mockMvc.perform(post("/api/kittens/search")
+        mockMvc.perform(get("/api/kittens/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new KittenFilter())))
                 .andExpect(status().isOk())
@@ -70,7 +71,7 @@ class tests {
         when(kittenService.getKittensFiltered(any(KittenFilter.class), any(Pageable.class)))
                 .thenReturn(emptyPage);
 
-        mockMvc.perform(post("/api/kittens/search")
+        mockMvc.perform(get("/api/kittens/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new KittenFilter())))
                 .andExpect(status().isOk())
@@ -97,7 +98,7 @@ class tests {
         KittenFilter filter = new KittenFilter();
         filter.setBreeds(Set.of(KittenBreed.BRITISH_SHORTHAIR));
 
-        mockMvc.perform(post("/api/kittens/search")
+        mockMvc.perform(get("/api/kittens/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filter)))
                 .andExpect(status().isOk())
@@ -122,7 +123,7 @@ class tests {
         when(kittenService.getKittensFiltered(any(KittenFilter.class), any(Pageable.class)))
                 .thenReturn(page);
 
-        mockMvc.perform(post("/api/kittens/search?page=1&size=1")
+        mockMvc.perform(get("/api/kittens/search?page=1&size=1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new KittenFilter())))
                 .andExpect(status().isOk())
@@ -134,7 +135,7 @@ class tests {
     void searchKittens_withInvalidJson_returnsBadRequest() throws Exception {
         String invalidJson = "{ \"breeds\": [\"not a breed\"] }";
 
-        mockMvc.perform(post("/api/kittens/search")
+        mockMvc.perform(get("/api/kittens/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJson))
                 .andExpect(status().isBadRequest());
