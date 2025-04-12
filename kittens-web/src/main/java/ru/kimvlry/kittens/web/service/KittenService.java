@@ -1,4 +1,5 @@
 package ru.kimvlry.kittens.web.service;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -8,17 +9,22 @@ import ru.kimvlry.kittens.web.dto.KittenDto;
 import ru.kimvlry.kittens.web.dto.KittenMapper;
 import ru.kimvlry.kittens.web.repository.KittenRepository;
 import ru.kimvlry.kittens.web.repository.KittenSpecifications;
+import ru.kimvlry.kittens.web.repository.OwnerRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class KittenService {
 
     private final KittenRepository kittenRepository;
+    private final OwnerRepository ownerRepository;
     private final KittenMapper kittenMapper;
 
-    public KittenService(KittenRepository kittenRepository, KittenMapper kittenMapper) {
+    public KittenService(KittenRepository kittenRepository, OwnerRepository ownerRepository, KittenMapper kittenMapper) {
         this.kittenRepository = kittenRepository;
+        this.ownerRepository = ownerRepository;
         this.kittenMapper = kittenMapper;
     }
 
@@ -64,5 +70,37 @@ public class KittenService {
         }
 
         return kittenRepository.findAll(spec, pageable).map(kittenMapper::toDto);
+    }
+
+    @Transactional
+    public KittenDto createKitten(KittenDto dto) {
+        Kitten kitten = new Kitten();
+
+        kitten.setName(dto.name());
+        kitten.setBirthTimestamp(dto.birthTimestamp());
+        kitten.setBreed(dto.breed());
+        kitten.setCoatColor(dto.coatColor());
+        kitten.setPurrLoudnessRate(dto.purrLoudnessRate());
+
+        if (dto.ownerId() != null) {
+            kitten.setOwner(ownerRepository.findById(dto.ownerId())
+                    .orElseThrow(() -> new RuntimeException("Owner not found")));
+        }
+
+        if (dto.friendIds() != null && !dto.friendIds().isEmpty()) {
+            Set<Kitten> friends = new HashSet<>(kittenRepository.findAllById(dto.friendIds()));
+            kitten.setFriends(friends);
+        }
+
+        Kitten saved = kittenRepository.save(kitten);
+        return kittenMapper.toDto(saved);
+    }
+
+    @Transactional
+    public void deleteKitten(Long id) {
+        if (!kittenRepository.existsById(id)) {
+            throw new RuntimeException("Kitten not found");
+        }
+        kittenRepository.deleteById(id);
     }
 }

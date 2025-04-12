@@ -21,6 +21,7 @@ import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -137,5 +138,50 @@ class tests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJson))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createKitten_returnsCreatedKitten() throws Exception {
+        KittenDto requestDto = new KittenDto(
+                null, "Kitkat", LocalDateTime.now(),
+                KittenBreed.SIBERIAN, KittenCoatColor.CARAMEL,
+                7, 1L, Set.of()
+        );
+
+        KittenDto responseDto = new KittenDto(
+                42L, requestDto.name(), requestDto.birthTimestamp(),
+                requestDto.breed(), requestDto.coatColor(),
+                requestDto.purrLoudnessRate(), requestDto.ownerId(), requestDto.friendIds()
+        );
+
+        when(kittenService.createKitten(any(KittenDto.class)))
+                .thenReturn(responseDto);
+
+        mockMvc.perform(post("/api/kittens")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(42))
+                .andExpect(jsonPath("$.name").value("Kitkat"))
+                .andExpect(jsonPath("$.breed").value("SIBERIAN"))
+                .andExpect(jsonPath("$.coatColor").value("CARAMEL"));
+    }
+
+    @Test
+    void createKitten_withInvalidData_returnsBadRequest() throws Exception {
+        String badJson = "{ \"name\": \"Whiskers\", \"purrLoudnessRate\": \"invalid rate\" }";
+
+        mockMvc.perform(post("/api/kittens")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(badJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deleteKitten_returnsNoContent() throws Exception {
+        Long kittenId = 99L;
+
+        mockMvc.perform(delete("/api/kittens/{id}", kittenId))
+                .andExpect(status().isNoContent());
     }
 }
