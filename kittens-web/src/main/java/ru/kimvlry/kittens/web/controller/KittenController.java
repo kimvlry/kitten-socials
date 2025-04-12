@@ -21,9 +21,15 @@ public class KittenController {
         this.kittenService = kittenService;
     }
 
-    @GetMapping("/api")
+    @GetMapping()
     public String hello() {
         return "Hello from kittens!";
+    }
+
+    @Operation(summary = "Get kitten by ID")
+    @GetMapping("/{id}")
+    public KittenDto getKittenById(@PathVariable Long id) {
+        return kittenService.getKittenById(id);
     }
 
     @Operation(
