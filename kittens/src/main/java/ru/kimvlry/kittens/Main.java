@@ -16,7 +16,7 @@ import ru.kimvlry.kittens.services.KittenService;
 import ru.kimvlry.kittens.services.OwnerService;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.HashSet;
 
 public class Main {
     public static void main(String[] args) throws InvalidInstanceException, DatabaseException {
@@ -40,40 +40,57 @@ public class Main {
         KittenService kittenService = new KittenService(new KittenDao(em));
 
         try {
-            Owner alice = new Owner();
-            alice.setName("Alice");
-            alice.setBirthTimestamp(LocalDateTime.now());
+            Owner sabrina = new Owner();
+            sabrina.setName("Sabrina");
+            sabrina.setBirthTimestamp(LocalDateTime.now());
 
-            Owner bob = new Owner();
-            bob.setName("Bob");
-            bob.setBirthTimestamp(LocalDateTime.now());
+            Owner jon = new Owner();
+            jon.setName("Jon");
+            jon.setBirthTimestamp(LocalDateTime.now());
 
-            Kitten whiskers = new Kitten();
-            whiskers.setName("Whiskers");
-            whiskers.setBirthTimestamp(LocalDateTime.now());
-            whiskers.setBreed(KittenBreed.SIBERIAN);
-            whiskers.setCoatColor(KittenCoatColor.CAPPUCCINO);
-            whiskers.setOwner(alice);
-            alice.setOwnedKittens(Set.of(whiskers));
+            Kitten salem = new Kitten();
+            salem.setName("Salem");
+            salem.setBirthTimestamp(LocalDateTime.now());
+            salem.setBreed(KittenBreed.SIBERIAN);
+            salem.setCoatColor(KittenCoatColor.CAPPUCCINO);
+            salem.setPurrLoudnessRate(8);
+            salem.setOwner(sabrina);
 
-            Kitten muffin = new Kitten();
-            muffin.setName("Muffin");
-            muffin.setBirthTimestamp(LocalDateTime.now());
-            muffin.setBreed(KittenBreed.MAINE_COON);
-            muffin.setCoatColor(KittenCoatColor.LATTE);
-            muffin.setOwner(bob);
-            bob.setOwnedKittens(Set.of(muffin));
+            Kitten garfield = new Kitten();
+            garfield.setName("Garfield");
+            garfield.setBirthTimestamp(LocalDateTime.now());
+            garfield.setBreed(KittenBreed.MAINE_COON);
+            garfield.setCoatColor(KittenCoatColor.LATTE);
+            garfield.setPurrLoudnessRate(1);
+            garfield.setOwner(sabrina);
 
-            ownerService.addOwner(alice);
-            ownerService.addOwner(bob);
+            Kitten pumpkin = new Kitten();
+            pumpkin.setName("Pumpkin");
+            pumpkin.setBirthTimestamp(LocalDateTime.now());
+            pumpkin.setBreed(KittenBreed.BRITISH_SHORTHAIR);
+            pumpkin.setCoatColor(KittenCoatColor.LATTE);
+            pumpkin.setPurrLoudnessRate(5);
+            pumpkin.setOwner(jon);
 
-            whiskers.getFriends().add(muffin);
-            muffin.getFriends().add(whiskers);
-            kittenService.update(whiskers);
-            kittenService.update(muffin);
+            sabrina.setOwnedKittens(new HashSet<>());
+            sabrina.getOwnedKittens().add(salem);
+            sabrina.getOwnedKittens().add(garfield);
 
-            Kitten fetched = kittenService.getById(whiskers.getId());
-            System.out.println(fetched.getName() + " has " + fetched.getFriends().size() + " friends.");
+            jon.setOwnedKittens(new HashSet<>());
+            jon.getOwnedKittens().add(pumpkin);
+
+            ownerService.addOwner(sabrina);
+            ownerService.addOwner(jon);
+
+            salem.getFriends().add(garfield);
+            garfield.getFriends().add(salem);
+
+            garfield.getFriends().add(pumpkin);
+            pumpkin.getFriends().add(garfield);
+
+            kittenService.update(salem);
+            kittenService.update(garfield);
+            kittenService.update(pumpkin);
 
         } finally {
             em.close();
