@@ -33,7 +33,7 @@ public class Kitten {
     @Column(name = "purr_loudness_rate")
     private int purrLoudnessRate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private Owner owner;
 
