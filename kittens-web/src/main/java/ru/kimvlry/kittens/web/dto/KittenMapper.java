@@ -17,6 +17,4 @@ public interface KittenMapper {
         return friends == null ? null :
                 friends.stream().map(Kitten::getId).collect(Collectors.toSet());
     }
-
-    Kitten toEntity(KittenDto dto);
 }
