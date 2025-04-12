@@ -15,4 +15,5 @@ public record KittenDto(
         int purrLoudnessRate,
         Long ownerId,
         Set<Long> friendIds
-) {}
+) {
+}

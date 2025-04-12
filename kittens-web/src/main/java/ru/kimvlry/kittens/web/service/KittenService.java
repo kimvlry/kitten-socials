@@ -1,4 +1,5 @@
 package ru.kimvlry.kittens.web.service;
+
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -72,31 +73,34 @@ public class KittenService {
         return kittenRepository.findAll(spec, pageable).map(kittenMapper::toDto);
     }
 
-    @Transactional
-    public KittenDto updateKitten(Long id, KittenDto dto) {
-        Kitten kitten = kittenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Kitten not found"));
-
+    private void fillKittenFromDto(Kitten kitten, KittenDto dto) {
         kitten.setName(dto.name());
         kitten.setBirthTimestamp(dto.birthTimestamp());
         kitten.setBreed(dto.breed());
         kitten.setCoatColor(dto.coatColor());
         kitten.setPurrLoudnessRate(dto.purrLoudnessRate());
 
-        if (dto.ownerId() != null) {
+        if (dto.ownerId() == null) {
+            throw new RuntimeException("Cannot set kitten's owner to null");
+        } else {
             kitten.setOwner(ownerRepository.findById(dto.ownerId())
                     .orElseThrow(() -> new RuntimeException("Owner not found")));
-        } else {
-            kitten.setOwner(null);
         }
 
-        if (dto.friendIds() != null) {
+        if (dto.friendIds() == null || dto.friendIds().isEmpty()) {
+            kitten.setFriends(null);
+        } else {
             Set<Kitten> friends = new HashSet<>(kittenRepository.findAllById(dto.friendIds()));
             kitten.setFriends(friends);
-        } else {
-            kitten.setFriends(null);
         }
+    }
 
+    @Transactional
+    public KittenDto updateKitten(Long id, KittenDto dto) {
+        Kitten kitten = kittenRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Kitten not found"));
+
+        fillKittenFromDto(kitten, dto);
         Kitten updated = kittenRepository.save(kitten);
         return kittenMapper.toDto(updated);
     }
@@ -105,22 +109,7 @@ public class KittenService {
     public KittenDto createKitten(KittenDto dto) {
         Kitten kitten = new Kitten();
 
-        kitten.setName(dto.name());
-        kitten.setBirthTimestamp(dto.birthTimestamp());
-        kitten.setBreed(dto.breed());
-        kitten.setCoatColor(dto.coatColor());
-        kitten.setPurrLoudnessRate(dto.purrLoudnessRate());
-
-        if (dto.ownerId() != null) {
-            kitten.setOwner(ownerRepository.findById(dto.ownerId())
-                    .orElseThrow(() -> new RuntimeException("Owner not found")));
-        }
-
-        if (dto.friendIds() != null && !dto.friendIds().isEmpty()) {
-            Set<Kitten> friends = new HashSet<>(kittenRepository.findAllById(dto.friendIds()));
-            kitten.setFriends(friends);
-        }
-
+        fillKittenFromDto(kitten, dto);
         Kitten saved = kittenRepository.save(kitten);
         return kittenMapper.toDto(saved);
     }

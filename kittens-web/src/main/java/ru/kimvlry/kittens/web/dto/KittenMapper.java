@@ -11,14 +11,11 @@ import java.util.stream.Collectors;
 public interface KittenMapper {
     @Mapping(source = "owner.id", target = "ownerId")
     @Mapping(source = "friends", target = "friendIds")
+    @Mapping(source = "birthDateTime", target = "birthTimestamp")
     KittenDto toDto(Kitten kitten);
 
     default Set<Long> mapFriendsToIds(Set<Kitten> friends) {
         return friends == null ? null :
                 friends.stream().map(Kitten::getId).collect(Collectors.toSet());
     }
-
-    @Mapping(source = "ownerId", target = "owner.id")
-    @Mapping(target = "friends", ignore = true)
-    Kitten toEntity(KittenDto dto);
 }
