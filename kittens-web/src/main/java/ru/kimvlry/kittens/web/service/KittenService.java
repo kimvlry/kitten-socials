@@ -73,6 +73,35 @@ public class KittenService {
     }
 
     @Transactional
+    public KittenDto updateKitten(Long id, KittenDto dto) {
+        Kitten kitten = kittenRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Kitten not found"));
+
+        kitten.setName(dto.name());
+        kitten.setBirthTimestamp(dto.birthTimestamp());
+        kitten.setBreed(dto.breed());
+        kitten.setCoatColor(dto.coatColor());
+        kitten.setPurrLoudnessRate(dto.purrLoudnessRate());
+
+        if (dto.ownerId() != null) {
+            kitten.setOwner(ownerRepository.findById(dto.ownerId())
+                    .orElseThrow(() -> new RuntimeException("Owner not found")));
+        } else {
+            kitten.setOwner(null);
+        }
+
+        if (dto.friendIds() != null) {
+            Set<Kitten> friends = new HashSet<>(kittenRepository.findAllById(dto.friendIds()));
+            kitten.setFriends(friends);
+        } else {
+            kitten.setFriends(null);
+        }
+
+        Kitten updated = kittenRepository.save(kitten);
+        return kittenMapper.toDto(updated);
+    }
+
+    @Transactional
     public KittenDto createKitten(KittenDto dto) {
         Kitten kitten = new Kitten();
 

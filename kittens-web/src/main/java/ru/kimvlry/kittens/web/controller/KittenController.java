@@ -37,7 +37,7 @@ public class KittenController {
             summary = "Search kittens with filter",
             description = "Search kittens using flexible filters like name, breed, coat color, birth date, purr loudness, owner, and friends."
     )
-    @PostMapping("/search")
+    @GetMapping("/search")
     public Page<KittenDto> searchKittens(
             @RequestBody KittenFilter filter,
             @ParameterObject Pageable pageable
@@ -45,8 +45,14 @@ public class KittenController {
         return kittenService.getKittensFiltered(filter, pageable);
     }
 
+    @Operation(summary = "Update an existing kitten")
+    @PutMapping("/{id}")
+    public KittenDto updateKitten(@PathVariable Long id, @RequestBody KittenDto dto) {
+        return kittenService.updateKitten(id, dto);
+    }
+
     @Operation(summary = "Create a new kitten")
-    @PutMapping
+    @PostMapping
     public KittenDto createKitten(@RequestBody KittenDto kittenDto) {
         return kittenService.createKitten(kittenDto);
     }
