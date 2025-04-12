@@ -46,7 +46,7 @@ public class KittenController {
     }
 
     @Operation(summary = "Create a new kitten")
-    @PostMapping
+    @PutMapping
     public KittenDto createKitten(@RequestBody KittenDto kittenDto) {
         return kittenService.createKitten(kittenDto);
     }
