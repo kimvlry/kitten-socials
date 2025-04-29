@@ -11,7 +11,7 @@ import ru.kimvlry.kittens.web.dto.KittenDto;
 import ru.kimvlry.kittens.web.service.KittenFilter;
 import ru.kimvlry.kittens.web.service.KittenService;
 
-@Tag(name = "Kittens", description = "Endpoints for kitten catalog search and filter")
+@Tag(name = "Kittens", description = "Endpoints for kitten catalog search and management")
 @RestController
 @RequestMapping("/api/kittens")
 public class KittenController {

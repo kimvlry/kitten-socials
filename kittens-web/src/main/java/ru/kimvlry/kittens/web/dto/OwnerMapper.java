@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface OwnerMapper {
     @Mapping(source = "ownedKittens", target = "ownedKittensIds")
-    @Mapping(source = "birthDateTime", target = "birthTimestamp")
+    @Mapping(source = "birthTimestamp", target = "birthTimestamp")
     OwnerDto toDto(Owner owner);
 
     default Set<Long> mapKittensToIds(Set<Kitten> ownedKittens) {

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 public class KittenFilter {
+
     @Schema(description = "Exact kitten name")
     private String name;
 
@@ -70,5 +71,41 @@ public class KittenFilter {
 
     public Set<Long> getFriendIds() {
         return friendIds;
+    }
+
+    public void setFriendIds(Set<Long> friendIds) {
+        this.friendIds = friendIds;
+    }
+
+    public void setOwnerIds(Set<Long> ownerIds) {
+        this.ownerIds = ownerIds;
+    }
+
+    public void setBirthBefore(LocalDateTime birthBefore) {
+        this.birthBefore = birthBefore;
+    }
+
+    public void setBirthAfter(LocalDateTime birthAfter) {
+        this.birthAfter = birthAfter;
+    }
+
+    public void setMaxPurr(Integer maxPurr) {
+        this.maxPurr = maxPurr;
+    }
+
+    public void setMinPurr(Integer minPurr) {
+        this.minPurr = minPurr;
+    }
+
+    public void setCoatColors(Set<KittenCoatColor> coatColors) {
+        this.coatColors = coatColors;
+    }
+
+    public void setBreeds(Set<KittenBreed> breeds) {
+        this.breeds = breeds;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

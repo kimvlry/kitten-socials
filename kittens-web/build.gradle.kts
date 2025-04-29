@@ -28,7 +28,7 @@ dependencies {
     implementation("com.github.javafaker:javafaker:0.14") {
         exclude(group = "org.yaml", module = "snakeyaml")
     }
-    implementation("org.yaml:snakeyaml:1.17")
+    implementation("org.yaml:snakeyaml:2.0")
 }
 
 configurations.all {

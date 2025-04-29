@@ -34,4 +34,20 @@ public class OwnerFilter {
     public String getName() {
         return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBirthAfter(LocalDateTime birthAfter) {
+        this.birthAfter = birthAfter;
+    }
+
+    public void setBirthBefore(LocalDateTime birthBefore) {
+        this.birthBefore = birthBefore;
+    }
+
+    public void setOwnedKittensIds(Set<Long> ownedKittensIds) {
+        this.ownedKittensIds = ownedKittensIds;
+    }
 }
