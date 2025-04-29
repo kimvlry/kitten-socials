@@ -11,24 +11,24 @@ public class OwnerFilter {
     private String name;
 
     @Schema(description = "Born after this date")
-    private LocalDateTime bornAfter;
+    private LocalDateTime birthAfter;
 
     @Schema(description = "Born before this date")
-    private LocalDateTime bornBefore;
+    private LocalDateTime birthBefore;
 
     @Schema(description = "Owned kittens' IDs to match")
-    private Set<Kitten> ownedKittensIds;
+    private Set<Long> ownedKittensIds;
 
-    public Set<Kitten> getOwnedKittensIds() {
+    public Set<Long> getOwnedKittensIds() {
         return ownedKittensIds;
     }
 
-    public LocalDateTime getBornBefore() {
-        return bornBefore;
+    public LocalDateTime getBirthBefore() {
+        return birthBefore;
     }
 
-    public LocalDateTime getBornAfter() {
-        return bornAfter;
+    public LocalDateTime getBirthAfter() {
+        return birthAfter;
     }
 
     public String getName() {

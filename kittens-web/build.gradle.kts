@@ -24,6 +24,11 @@ dependencies {
 
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    implementation("com.github.javafaker:javafaker:0.14") {
+        exclude(group = "org.yaml", module = "snakeyaml")
+    }
+    implementation("org.yaml:snakeyaml:1.17")
 }
 
 configurations.all {
