@@ -58,10 +58,10 @@ public class KittenService {
         return dao.getAll();
     }
 
-    public Kitten addFriendship(Kitten cat1, Kitten cat2) throws DatabaseException {
+    public void addFriendship(Kitten cat1, Kitten cat2) throws DatabaseException {
         cat1.getFriends().add(cat2);
         cat2.getFriends().add(cat1);
         dao.save(cat2);
-        return dao.save(cat1);
+        dao.save(cat1);
     }
 }

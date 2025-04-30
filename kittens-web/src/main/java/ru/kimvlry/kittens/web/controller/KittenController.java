@@ -7,9 +7,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.kimvlry.kittens.entities.KittenBreed;
+import ru.kimvlry.kittens.entities.KittenCoatColor;
 import ru.kimvlry.kittens.web.dto.KittenDto;
 import ru.kimvlry.kittens.web.service.KittenFilter;
 import ru.kimvlry.kittens.web.service.KittenService;
+
+import java.time.LocalDate;
+import java.util.Set;
 
 @Tag(name = "Kittens", description = "Endpoints for kitten catalog search and management")
 @RestController
@@ -39,9 +44,27 @@ public class KittenController {
     )
     @GetMapping("/search")
     public Page<KittenDto> searchKittens(
-            @RequestBody KittenFilter filter,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Set<KittenBreed> breeds,
+            @RequestParam(required = false) Set<KittenCoatColor> coat,
+            @RequestParam(required = false) Integer minPurr,
+            @RequestParam(required = false) Integer maxPurr,
+            @RequestParam(required = false) LocalDate birthAfter,
+            @RequestParam(required = false) LocalDate birthBefore,
+            @RequestParam(required = false) Set<Long> ownerIds,
+            @RequestParam(required = false) Set<Long> friendIds,
             @ParameterObject Pageable pageable
     ) {
+        KittenFilter filter = new KittenFilter();
+        filter.setName(name);
+        filter.setBreeds(breeds);
+        filter.setCoatColors(coat);
+        filter.setMinPurr(minPurr);
+        filter.setMaxPurr(maxPurr);
+        filter.setBirthAfter(birthAfter.atStartOfDay());
+        filter.setBirthBefore(birthBefore.atStartOfDay());
+        filter.setOwnerIds(ownerIds);
+        filter.setFriendIds(friendIds);
         return kittenService.getKittensFiltered(filter, pageable);
     }
 

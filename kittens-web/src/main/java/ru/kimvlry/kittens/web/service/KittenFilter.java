@@ -74,38 +74,56 @@ public class KittenFilter {
     }
 
     public void setFriendIds(Set<Long> friendIds) {
-        this.friendIds = friendIds;
+        if (friendIds != null) {
+            this.friendIds = friendIds;
+        }
     }
 
     public void setOwnerIds(Set<Long> ownerIds) {
-        this.ownerIds = ownerIds;
+        if (ownerIds != null) {
+            this.ownerIds = ownerIds;
+        }
     }
 
     public void setBirthBefore(LocalDateTime birthBefore) {
-        this.birthBefore = birthBefore;
+        if (birthBefore != null) {
+            this.birthBefore = birthBefore;
+        }
     }
 
     public void setBirthAfter(LocalDateTime birthAfter) {
-        this.birthAfter = birthAfter;
+        if (birthAfter != null) {
+            this.birthAfter = birthAfter;
+        }
     }
 
     public void setMaxPurr(Integer maxPurr) {
-        this.maxPurr = maxPurr;
+        if (maxPurr != null) {
+            this.maxPurr = maxPurr;
+        }
     }
 
     public void setMinPurr(Integer minPurr) {
-        this.minPurr = minPurr;
+        if (minPurr != null) {
+            this.minPurr = minPurr;
+        }
     }
 
     public void setCoatColors(Set<KittenCoatColor> coatColors) {
-        this.coatColors = coatColors;
+        if (coatColors != null) {
+            this.coatColors = coatColors;
+        }
     }
 
     public void setBreeds(Set<KittenBreed> breeds) {
-        this.breeds = breeds;
+        if (breeds != null) {
+            this.breeds = breeds;
+        }
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name != null) {
+            this.name = name;
+        }
     }
 }
