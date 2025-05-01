@@ -1,10 +1,11 @@
 package ru.kimvlry.kittens.web.security.user;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.kimvlry.kittens.entities.Owner;
 import ru.kimvlry.kittens.web.security.role.Role;
 
 import java.util.Collection;
@@ -14,8 +15,9 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class UserDetailsImpl implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,16 +25,16 @@ public class UserDetailsImpl implements UserDetails {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
     @Column(nullable = false)
     private String password;
 
-    @OneToOne()
-    @JoinColumn(name = "owner_id",
-                referencedColumnName = "id",
-                unique = true)
-    private Owner owner;
+    @OneToOne(mappedBy = "user")
+    private UserOwnerMapping ownerMapping;
 
-    @ManyToMany()
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -45,16 +47,6 @@ public class UserDetailsImpl implements UserDetails {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
     }
 
     @Override
