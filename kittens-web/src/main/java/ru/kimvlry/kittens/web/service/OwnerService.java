@@ -8,11 +8,12 @@ import org.springframework.stereotype.Service;
 import ru.kimvlry.kittens.entities.Kitten;
 import ru.kimvlry.kittens.entities.Owner;
 import ru.kimvlry.kittens.web.dto.OwnerDto;
-import ru.kimvlry.kittens.web.dto.OwnerMapper;
+import ru.kimvlry.kittens.web.dto.mappers.OwnerMapper;
 import ru.kimvlry.kittens.web.exception.EntityNotFoundException;
 import ru.kimvlry.kittens.web.repository.KittenRepository;
 import ru.kimvlry.kittens.web.repository.OwnerRepository;
-import ru.kimvlry.kittens.web.repository.OwnerSpecifications;
+import ru.kimvlry.kittens.web.repository.specifications.OwnerSpecifications;
+import ru.kimvlry.kittens.web.service.filters.OwnerFilter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

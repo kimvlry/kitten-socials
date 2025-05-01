@@ -1,9 +1,10 @@
-package ru.kimvlry.kittens.web.dto;
+package ru.kimvlry.kittens.web.dto.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.kimvlry.kittens.entities.Kitten;
 import ru.kimvlry.kittens.entities.Owner;
+import ru.kimvlry.kittens.web.dto.OwnerDto;
 
 import java.util.Set;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.service;
+package ru.kimvlry.kittens.web.service.filters;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

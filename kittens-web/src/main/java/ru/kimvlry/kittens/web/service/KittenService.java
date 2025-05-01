@@ -7,12 +7,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.kimvlry.kittens.entities.Kitten;
 import ru.kimvlry.kittens.web.dto.KittenDto;
-import ru.kimvlry.kittens.web.dto.KittenMapper;
+import ru.kimvlry.kittens.web.dto.mappers.KittenMapper;
 import ru.kimvlry.kittens.web.exception.NonNullableException;
 import ru.kimvlry.kittens.web.exception.EntityNotFoundException;
 import ru.kimvlry.kittens.web.repository.KittenRepository;
-import ru.kimvlry.kittens.web.repository.KittenSpecifications;
+import ru.kimvlry.kittens.web.repository.specifications.KittenSpecifications;
 import ru.kimvlry.kittens.web.repository.OwnerRepository;
+import ru.kimvlry.kittens.web.service.filters.KittenFilter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
