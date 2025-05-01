@@ -299,7 +299,7 @@ class Tests {
         Kitten updateData = new Kitten();
         updateData.setId(kittenId);
         updateData.setName(catToTransfer.getName());
-        updateData.setBirthTimestamp(catToTransfer.getBirthDateTime());
+        updateData.setBirthTimestamp(catToTransfer.getBirthTimestamp());
         updateData.setBreed(catToTransfer.getBreed());
         updateData.setCoatColor(catToTransfer.getCoatColor());
         updateData.setOwner(newOwner);

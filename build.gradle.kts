@@ -21,6 +21,12 @@ subprojects {
         testImplementation("org.slf4j:slf4j-simple:2.0.9")
         implementation("org.hibernate:hibernate-core:6.6.11.Final")
         implementation("org.postgresql:postgresql:42.7.3")
+
+        compileOnly("org.projectlombok:lombok:1.18.34")
+        annotationProcessor("org.projectlombok:lombok:1.18.34")
+
+        testCompileOnly("org.projectlombok:lombok:1.18.34")
+        testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
     }
 
     tasks.test {

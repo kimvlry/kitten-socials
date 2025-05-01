@@ -1,12 +1,16 @@
 package ru.kimvlry.kittens.web.service;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
 import ru.kimvlry.kittens.entities.KittenBreed;
 import ru.kimvlry.kittens.entities.KittenCoatColor;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
+@Getter
+@Setter
 public class KittenFilter {
 
     @Schema(description = "Exact kitten name")
@@ -35,95 +39,4 @@ public class KittenFilter {
 
     @Schema(description = "Friend kitten IDs to match")
     private Set<Long> friendIds;
-
-    public String getName() {
-        return name;
-    }
-
-    public Set<KittenBreed> getBreeds() {
-        return breeds;
-    }
-
-    public Set<KittenCoatColor> getCoatColors() {
-        return coatColors;
-    }
-
-    public Integer getMinPurr() {
-        return minPurr;
-    }
-
-    public Integer getMaxPurr() {
-        return maxPurr;
-    }
-
-    public LocalDateTime getBirthAfter() {
-        return birthAfter;
-    }
-
-    public LocalDateTime getBirthBefore() {
-        return birthBefore;
-    }
-
-
-    public Set<Long> getOwnerIds() {
-        return ownerIds;
-    }
-
-    public Set<Long> getFriendIds() {
-        return friendIds;
-    }
-
-    public void setFriendIds(Set<Long> friendIds) {
-        if (friendIds != null) {
-            this.friendIds = friendIds;
-        }
-    }
-
-    public void setOwnerIds(Set<Long> ownerIds) {
-        if (ownerIds != null) {
-            this.ownerIds = ownerIds;
-        }
-    }
-
-    public void setBirthBefore(LocalDateTime birthBefore) {
-        if (birthBefore != null) {
-            this.birthBefore = birthBefore;
-        }
-    }
-
-    public void setBirthAfter(LocalDateTime birthAfter) {
-        if (birthAfter != null) {
-            this.birthAfter = birthAfter;
-        }
-    }
-
-    public void setMaxPurr(Integer maxPurr) {
-        if (maxPurr != null) {
-            this.maxPurr = maxPurr;
-        }
-    }
-
-    public void setMinPurr(Integer minPurr) {
-        if (minPurr != null) {
-            this.minPurr = minPurr;
-        }
-    }
-
-    public void setCoatColors(Set<KittenCoatColor> coatColors) {
-        if (coatColors != null) {
-            this.coatColors = coatColors;
-        }
-    }
-
-    public void setBreeds(Set<KittenBreed> breeds) {
-        if (breeds != null) {
-            this.breeds = breeds;
-        }
-    }
-
-    public void setName(String name) {
-        if (name != null) {
-            this.name = name;
-        }
-    }
 }

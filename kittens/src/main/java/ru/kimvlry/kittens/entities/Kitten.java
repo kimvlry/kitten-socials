@@ -4,11 +4,15 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Table(name = "kittens")
+@Getter
+@Setter
 public class Kitten {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,69 +48,4 @@ public class Kitten {
             inverseJoinColumns = @JoinColumn(name = "kitten2_id")
     )
     private Set<Kitten> friends = new HashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalDateTime getBirthDateTime() {
-        return birthTimestamp;
-    }
-
-    public KittenBreed getBreed() {
-        return breed;
-    }
-
-    public KittenCoatColor getCoatColor() {
-        return coatColor;
-    }
-
-    public int getPurrLoudnessRate() {
-        return purrLoudnessRate;
-    }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public Set<Kitten> getFriends() {
-        return friends;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDateTime setBirthTimestamp(LocalDateTime birthTimestamp) {
-        this.birthTimestamp = birthTimestamp;
-        return birthTimestamp;
-    }
-
-    public void setBreed(KittenBreed breed) {
-        this.breed = breed;
-    }
-
-    public void setCoatColor(KittenCoatColor coatColor) {
-        this.coatColor = coatColor;
-    }
-
-    public void setPurrLoudnessRate(int purrLoudness) {
-        this.purrLoudnessRate = purrLoudness;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-    }
-
-    public void setFriends(Set<Kitten> friends) {
-        this.friends = new HashSet<>(friends);
-    }
 }

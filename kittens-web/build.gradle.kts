@@ -29,6 +29,9 @@ dependencies {
         exclude(group = "org.yaml", module = "snakeyaml")
     }
     implementation("org.yaml:snakeyaml:2.0")
+
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("com.auth0:java-jwt:4.5.0")
 }
 
 configurations.all {
