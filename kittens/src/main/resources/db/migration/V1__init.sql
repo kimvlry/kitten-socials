@@ -30,7 +30,7 @@ CREATE TYPE kitten_coat_color AS ENUM (
 CREATE TABLE IF NOT EXISTS owners
 (
     id              BIGSERIAL PRIMARY KEY,
-    name            VARCHAR(255) NOT NULL,
+    name            VARCHAR(255) NOT NULL UNIQUE,
     birth_timestamp TIMESTAMP
 );
 
