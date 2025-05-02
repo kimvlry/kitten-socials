@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public interface KittenMapper {
     @Mapping(source = "owner.id", target = "ownerId")
     @Mapping(source = "friends", target = "friendIds")
-    @Mapping(source = "birthTimestamp", target = "birthTimestamp")
+    @Mapping(source = "birthDate", target = "birthDate")
     KittenDto toDto(Kitten kitten);
 
     default Set<Long> mapFriendsToIds(Set<Kitten> friends) {

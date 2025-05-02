@@ -9,7 +9,7 @@ import ru.kimvlry.kittens.exceptions.*;
 import ru.kimvlry.kittens.services.KittenService;
 import ru.kimvlry.kittens.services.OwnerService;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +25,7 @@ import jakarta.persistence.Persistence;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-class Tests {
+class DomainTests {
     @Container
     private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("test_db")
@@ -299,7 +299,7 @@ class Tests {
         Kitten updateData = new Kitten();
         updateData.setId(kittenId);
         updateData.setName(catToTransfer.getName());
-        updateData.setBirthTimestamp(catToTransfer.getBirthTimestamp());
+        updateData.setBirthDate(catToTransfer.getBirthDate());
         updateData.setBreed(catToTransfer.getBreed());
         updateData.setCoatColor(catToTransfer.getCoatColor());
         updateData.setOwner(newOwner);
@@ -338,18 +338,18 @@ class Tests {
     private Owner createOwnerWithNameOnly(String name) {
         Owner owner = new Owner();
         owner.setName(name);
-        owner.setBirthTimestamp(LocalDateTime.now());
+        owner.setBirthTimestamp(LocalDate.now());
         return owner;
     }
 
     private Owner createValidOwnerWithKitten(String ownerName, String kittenName) throws Exception {
         Owner owner = new Owner();
         owner.setName(ownerName);
-        owner.setBirthTimestamp(LocalDateTime.now());
+        owner.setBirthTimestamp(LocalDate.now());
 
         Kitten kitten = new Kitten();
         kitten.setName(kittenName);
-        kitten.setBirthTimestamp(LocalDateTime.now());
+        kitten.setBirthDate(LocalDate.now());
         kitten.setBreed(KittenBreed.BRITISH_SHORTHAIR);
         kitten.setCoatColor(KittenCoatColor.CAPPUCCINO);
 
@@ -372,7 +372,7 @@ class Tests {
     private Kitten createTestKitten(String name, Owner owner) {
         Kitten kitten = new Kitten();
         kitten.setName(name);
-        kitten.setBirthTimestamp(LocalDateTime.now());
+        kitten.setBirthDate(LocalDate.now());
         kitten.setBreed(KittenBreed.BRITISH_SHORTHAIR);
         kitten.setCoatColor(KittenCoatColor.LATTE);
         kitten.setOwner(owner);

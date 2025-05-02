@@ -78,7 +78,7 @@ public class KittenService {
 
     private void fillKittenFromDto(Kitten kitten, KittenDto dto) {
         kitten.setName(dto.name());
-        kitten.setBirthTimestamp(dto.birthTimestamp());
+        kitten.setBirthDate(dto.birthDate());
         kitten.setBreed(dto.breed());
         kitten.setCoatColor(dto.coatColor());
         kitten.setPurrLoudnessRate(dto.purrLoudnessRate());

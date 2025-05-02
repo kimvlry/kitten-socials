@@ -3,13 +3,13 @@ package ru.kimvlry.kittens.web.dto;
 import ru.kimvlry.kittens.entities.KittenBreed;
 import ru.kimvlry.kittens.entities.KittenCoatColor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Set;
 
 public record KittenDto(
         Long id,
         String name,
-        LocalDateTime birthTimestamp,
+        LocalDate birthDate,
         KittenBreed breed,
         KittenCoatColor coatColor,
         int purrLoudnessRate,

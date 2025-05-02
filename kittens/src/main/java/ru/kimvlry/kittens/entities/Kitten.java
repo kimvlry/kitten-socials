@@ -1,6 +1,6 @@
 package ru.kimvlry.kittens.entities;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.*;
@@ -22,7 +22,7 @@ public class Kitten {
     private String name;
 
     @Column(name = "birth_timestamp")
-    private LocalDateTime birthTimestamp;
+    private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
