@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.security;
+package ru.kimvlry.kittens.web.security.auth;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
