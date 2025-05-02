@@ -1,4 +1,7 @@
 package ru.kimvlry.kittens.web.dto;
 
-public class AuthRequest {
+public record AuthRequest (
+        String username,
+        String password
+) {
 }
