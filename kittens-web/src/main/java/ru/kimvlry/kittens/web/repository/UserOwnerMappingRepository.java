@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface UserOwnerMappingRepository extends JpaRepository<UserOwnerMapping, Long> {
     Optional<UserOwnerMapping> findByUserId(Long userId);
+    Optional<UserOwnerMapping> findByUserIdAndOwnerId(Long userId, Long ownerId);
 }

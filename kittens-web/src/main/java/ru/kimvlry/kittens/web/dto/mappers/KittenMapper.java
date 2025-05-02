@@ -1,8 +1,9 @@
-package ru.kimvlry.kittens.web.dto;
+package ru.kimvlry.kittens.web.dto.mappers;
 
 import ru.kimvlry.kittens.entities.Kitten;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import ru.kimvlry.kittens.web.dto.KittenDto;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 public interface KittenMapper {
     @Mapping(source = "owner.id", target = "ownerId")
     @Mapping(source = "friends", target = "friendIds")
-    @Mapping(source = "birthDateTime", target = "birthTimestamp")
+    @Mapping(source = "birthTimestamp", target = "birthTimestamp")
     KittenDto toDto(Kitten kitten);
 
     default Set<Long> mapFriendsToIds(Set<Kitten> friends) {

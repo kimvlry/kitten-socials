@@ -6,19 +6,22 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.kimvlry.kittens.entities.KittenBreed;
 import ru.kimvlry.kittens.entities.KittenCoatColor;
 import ru.kimvlry.kittens.web.dto.KittenDto;
-import ru.kimvlry.kittens.web.service.KittenFilter;
+import ru.kimvlry.kittens.web.security.annotation.IsKittenOwner;
+import ru.kimvlry.kittens.web.service.filters.KittenFilter;
 import ru.kimvlry.kittens.web.service.KittenService;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
+@PreAuthorize("isAuthenticated()")
 @Tag(name = "Kittens", description = "Endpoints for kitten catalog search and management")
 @RestController
-@RequestMapping("/api/kittens")
+@RequestMapping("/kittens")
 public class KittenController {
 
     private final KittenService kittenService;
@@ -49,8 +52,8 @@ public class KittenController {
             @RequestParam(required = false) Set<KittenCoatColor> coat,
             @RequestParam(required = false) Integer minPurr,
             @RequestParam(required = false) Integer maxPurr,
-            @RequestParam(required = false) LocalDate birthAfter,
-            @RequestParam(required = false) LocalDate birthBefore,
+            @RequestParam(required = false) LocalDateTime birthAfter,
+            @RequestParam(required = false) LocalDateTime birthBefore,
             @RequestParam(required = false) Set<Long> ownerIds,
             @RequestParam(required = false) Set<Long> friendIds,
             @ParameterObject Pageable pageable
@@ -61,25 +64,28 @@ public class KittenController {
         filter.setCoatColors(coat);
         filter.setMinPurr(minPurr);
         filter.setMaxPurr(maxPurr);
-        filter.setBirthAfter(birthAfter.atStartOfDay());
-        filter.setBirthBefore(birthBefore.atStartOfDay());
+        filter.setBirthAfter(birthAfter);
+        filter.setBirthBefore(birthBefore);
         filter.setOwnerIds(ownerIds);
         filter.setFriendIds(friendIds);
         return kittenService.getKittensFiltered(filter, pageable);
     }
 
+    @IsKittenOwner
     @Operation(summary = "Update an existing kitten")
     @PutMapping("/{id}")
     public KittenDto updateKitten(@PathVariable Long id, @RequestBody KittenDto dto) {
         return kittenService.updateKitten(id, dto);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Create a new kitten")
     @PostMapping
     public KittenDto createKitten(@RequestBody KittenDto kittenDto) {
         return kittenService.createKitten(kittenDto);
     }
 
+    @IsKittenOwner
     @Operation(summary = "Delete a kitten by ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
