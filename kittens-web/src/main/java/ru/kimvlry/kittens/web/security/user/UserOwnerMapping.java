@@ -16,7 +16,7 @@ public class UserOwnerMapping {
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
-    private UserDetailsImpl user;
+    private User user;
 
     @OneToOne
     @JoinColumn(name = "owner_id", unique = true)
