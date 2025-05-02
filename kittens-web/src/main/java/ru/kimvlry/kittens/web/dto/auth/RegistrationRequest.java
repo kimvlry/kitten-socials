@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.dto;
+package ru.kimvlry.kittens.web.dto.auth;
 
 import java.time.LocalDate;
 
