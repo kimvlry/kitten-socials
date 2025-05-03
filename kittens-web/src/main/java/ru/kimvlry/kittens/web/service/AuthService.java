@@ -79,7 +79,7 @@ public class AuthService {
         mapping.setOwner(owner);
         mappingRepository.save(mapping);
 
-        return jwtTokenProvider.GenerateToken(user);
+        return jwtTokenProvider.generateToken(user);
     }
 
     public String login(AuthRequest request) {
@@ -89,6 +89,6 @@ public class AuthService {
                         request.password()
                 )
         );
-        return jwtTokenProvider.GenerateToken(authentication);
+        return jwtTokenProvider.generateToken(authentication);
     }
 }

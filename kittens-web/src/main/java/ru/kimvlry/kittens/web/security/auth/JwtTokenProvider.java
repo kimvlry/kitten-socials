@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,13 +16,14 @@ import ru.kimvlry.kittens.web.security.user.User;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@Getter
 @Component
 public class JwtTokenProvider {
 
-    @Value("${JWT_SECRET}")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
-    @Value("${JWT_EXPIRATION}")
+    @Value("${jwt.expiration}")
     private long expirationMs;
 
     @PostConstruct
@@ -34,7 +36,7 @@ public class JwtTokenProvider {
         }
     }
 
-    public String GenerateToken(Authentication authentication) {
+    public String generateToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         String authorities = userDetails.getAuthorities().stream()
@@ -44,7 +46,7 @@ public class JwtTokenProvider {
         return generate(authorities, userDetails.getUsername());
     }
 
-    public String GenerateToken(User user) {
+    public String generateToken(User user) {
         String authorities = user.getRoles().stream()
                 .map(Role::getName)
                 .collect(Collectors.joining(","));
@@ -52,7 +54,7 @@ public class JwtTokenProvider {
         return generate(authorities, user.getUsername());
     }
 
-    private String generate(String authorities, String subject) {
+    public String generate(String authorities, String subject) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expirationMs);
 
@@ -62,16 +64,17 @@ public class JwtTokenProvider {
                 .withIssuedAt(now)
                 .withExpiresAt(expiryDate)
                 .sign(Algorithm.HMAC512(jwtSecret));
+
     }
 
-    public String GetUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(jwtSecret))
                 .build()
                 .verify(token);
         return decodedJWT.getSubject();
     }
 
-    public boolean ValidateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             JWT.require(Algorithm.HMAC512(jwtSecret))
                     .build()

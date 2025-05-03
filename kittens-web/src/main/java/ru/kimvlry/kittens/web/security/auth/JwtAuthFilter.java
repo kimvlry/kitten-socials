@@ -38,8 +38,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String jwt = getJwtFromRequest(request);
 
-        if (jwt != null && tokenProvider.ValidateToken(jwt)) {
-            String username = tokenProvider.GetUsernameFromToken(jwt);
+        if (jwt != null && tokenProvider.validateToken(jwt)) {
+            String username = tokenProvider.getUsernameFromToken(jwt);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
