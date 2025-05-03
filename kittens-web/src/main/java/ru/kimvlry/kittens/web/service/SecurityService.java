@@ -1,6 +1,5 @@
 package ru.kimvlry.kittens.web.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -13,14 +12,18 @@ import ru.kimvlry.kittens.web.security.user.User;
 @Service
 public class SecurityService {
 
-    @Autowired
-    private KittenRepository kittenRepository;
+    private final KittenRepository kittenRepository;
+    private final UserOwnerMappingRepository userOwnerMappingRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserOwnerMappingRepository userOwnerMappingRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    public SecurityService(KittenRepository kittenRepository,
+                           UserOwnerMappingRepository userOwnerMappingRepository,
+                           UserRepository userRepository
+    ) {
+        this.kittenRepository = kittenRepository;
+        this.userOwnerMappingRepository = userOwnerMappingRepository;
+        this.userRepository = userRepository;
+    }
 
     public boolean isKittenOwner(String username, Long kittenId) {
         User user = userRepository.findByUsername(username)

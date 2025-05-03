@@ -1,15 +1,14 @@
 package ru.kimvlry.kittens.web.service;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kimvlry.kittens.entities.Owner;
-import ru.kimvlry.kittens.web.dto.AuthRequest;
-import ru.kimvlry.kittens.web.dto.RegistrationRequest;
+import ru.kimvlry.kittens.web.dto.auth.AuthRequest;
+import ru.kimvlry.kittens.web.dto.auth.RegistrationRequest;
 import ru.kimvlry.kittens.web.repository.OwnerRepository;
 import ru.kimvlry.kittens.web.repository.RoleRepository;
 import ru.kimvlry.kittens.web.repository.UserOwnerMappingRepository;
@@ -25,26 +24,31 @@ import java.util.Collections;
 @Service
 public class AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final OwnerRepository ownerRepository;
+    private final UserOwnerMappingRepository mappingRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private OwnerRepository ownerRepository;
-
-    @Autowired
-    private UserOwnerMappingRepository mappingRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private AuthenticationManager authManager;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    public AuthService(
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            OwnerRepository ownerRepository,
+            UserOwnerMappingRepository mappingRepository,
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authManager,
+            JwtTokenProvider jwtTokenProvider
+    ) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.ownerRepository = ownerRepository;
+        this.mappingRepository = mappingRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authManager = authManager;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Transactional
     public String register(RegistrationRequest request) {
