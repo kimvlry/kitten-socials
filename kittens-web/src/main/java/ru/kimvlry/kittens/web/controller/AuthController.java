@@ -1,19 +1,21 @@
 package ru.kimvlry.kittens.web.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kimvlry.kittens.web.dto.AuthRequest;
-import ru.kimvlry.kittens.web.dto.AuthResponse;
-import ru.kimvlry.kittens.web.dto.RegistrationRequest;
+import ru.kimvlry.kittens.web.dto.auth.AuthRequest;
+import ru.kimvlry.kittens.web.dto.auth.AuthResponse;
+import ru.kimvlry.kittens.web.dto.auth.RegistrationRequest;
 import ru.kimvlry.kittens.web.service.AuthService;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegistrationRequest request) {
