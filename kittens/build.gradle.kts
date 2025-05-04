@@ -1,8 +1,6 @@
 plugins {
     application
-    java
-    id("org.hibernate.orm") version "6.6.11.Final"
-    id("org.flywaydb.flyway") version "11.4.0"
+    id("org.flywaydb.flyway") version ("11.8.0")
 }
 
 application {
@@ -18,7 +16,7 @@ flyway {
 }
 
 dependencies {
-    implementation("org.flywaydb:flyway-core:11.4.0")
-    implementation("org.flywaydb:flyway-database-postgresql:11.4.0")
-    implementation("org.jboss.logging:jboss-logging:3.5.3.Final")
+    implementation("org.flywaydb:flyway-core:11.8.0")
+    implementation("org.flywaydb:flyway-database-postgresql:11.8.0")
+    implementation("org.jboss.logging:jboss-logging:3.6.1.Final")
 }

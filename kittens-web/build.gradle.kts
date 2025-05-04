@@ -1,37 +1,30 @@
 plugins {
     application
-    id("org.springframework.boot") version "3.2.5"
-    id("io.spring.dependency-management") version "1.1.4"
-    id("java")
-    id("org.openapi.generator") version "7.6.0"
+    id("org.springframework.boot") version "3.4.5"
 }
 
 application {
-    mainClass.set("ru.kimvlry.kittens.web.main")
+    mainClass.set("ru.kimvlry.kittens.web.Main")
 }
 
 dependencies {
     implementation(project(":kittens"))
 
-    implementation("org.flywaydb:flyway-core:11.4.0")
-    implementation("org.flywaydb:flyway-database-postgresql:11.4.0")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.4.5")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.4.5")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.4.5")
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
-    implementation("org.mapstruct:mapstruct:1.5.5.Final")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
 
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test:6.4.5")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.4.5")
 
-    implementation("com.github.javafaker:javafaker:0.14") {
-        exclude(group = "org.yaml", module = "snakeyaml")
-    }
-    implementation("org.yaml:snakeyaml:2.0")
-
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("jakarta.validation:jakarta.validation-api:3.1.1")
+    implementation("org.mapstruct:mapstruct:1.6.3")
+    implementation("org.yaml:snakeyaml:2.4")
     implementation("com.auth0:java-jwt:4.5.0")
+
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 }
 
 configurations.all {
