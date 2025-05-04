@@ -2,10 +2,10 @@ package ru.kimvlry.kittens.web.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kimvlry.kittens.web.dto.auth.AuthRequest;
-import ru.kimvlry.kittens.web.dto.auth.RefreshRequest;
-import ru.kimvlry.kittens.web.dto.auth.TokenPair;
-import ru.kimvlry.kittens.web.dto.auth.RegistrationRequest;
+import ru.kimvlry.kittens.web.dto.security.AuthRequest;
+import ru.kimvlry.kittens.web.dto.security.RefreshRequest;
+import ru.kimvlry.kittens.web.dto.security.TokenPair;
+import ru.kimvlry.kittens.web.dto.security.RegistrationRequest;
 import ru.kimvlry.kittens.web.service.AuthService;
 
 @RestController
