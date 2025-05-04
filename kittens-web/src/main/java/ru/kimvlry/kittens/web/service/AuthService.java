@@ -8,16 +8,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kimvlry.kittens.entities.Owner;
 import ru.kimvlry.kittens.web.dto.auth.AuthRequest;
+import ru.kimvlry.kittens.web.dto.auth.RefreshRequest;
 import ru.kimvlry.kittens.web.dto.auth.RegistrationRequest;
-import ru.kimvlry.kittens.web.repository.OwnerRepository;
-import ru.kimvlry.kittens.web.repository.RoleRepository;
-import ru.kimvlry.kittens.web.repository.UserOwnerMappingRepository;
-import ru.kimvlry.kittens.web.repository.UserRepository;
-import ru.kimvlry.kittens.web.security.auth.JwtTokenProvider;
-import ru.kimvlry.kittens.web.security.role.Role;
-import ru.kimvlry.kittens.web.security.user.User;
+import ru.kimvlry.kittens.web.dto.auth.TokenPair;
+import ru.kimvlry.kittens.web.entities.RefreshToken;
+import ru.kimvlry.kittens.web.repository.*;
+import ru.kimvlry.kittens.web.security.jwt.JwtTokenProvider;
+import ru.kimvlry.kittens.web.entities.Role;
+import ru.kimvlry.kittens.web.entities.User;
 import ru.kimvlry.kittens.web.security.user.UserOwnerMapping;
 
+import java.time.Instant;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Collections;
 
 
@@ -31,6 +33,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public AuthService(
             UserRepository userRepository,
@@ -39,8 +42,8 @@ public class AuthService {
             UserOwnerMappingRepository mappingRepository,
             PasswordEncoder passwordEncoder,
             AuthenticationManager authManager,
-            JwtTokenProvider jwtTokenProvider
-    ) {
+            JwtTokenProvider jwtTokenProvider,
+            RefreshTokenRepository refreshTokenRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.ownerRepository = ownerRepository;
@@ -48,10 +51,11 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
         this.authManager = authManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Transactional
-    public String register(RegistrationRequest request) {
+    public TokenPair register(RegistrationRequest request) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
             throw new IllegalArgumentException("Username already exists");
         }
@@ -79,16 +83,37 @@ public class AuthService {
         mapping.setOwner(owner);
         mappingRepository.save(mapping);
 
-        return jwtTokenProvider.generateToken(user);
+        return jwtTokenProvider.generateAccessAndRefreshTokens(user);
     }
 
-    public String login(AuthRequest request) {
+    public TokenPair login(AuthRequest request) {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.username(),
                         request.password()
                 )
         );
-        return jwtTokenProvider.generateToken(authentication);
+        return jwtTokenProvider.generateAccessAndRefreshTokens(authentication);
+    }
+
+    public TokenPair refresh(RefreshRequest request) {
+        String token = request.refreshToken();
+
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token"));
+
+        if (refreshToken.isRevoked()) {
+            throw new IllegalArgumentException("Token has been revoked");
+        }
+
+        if (refreshToken.getExpiryDate().isBefore(ChronoLocalDateTime.from(Instant.now()))) {
+            throw new IllegalArgumentException("Token has expired");
+        }
+
+        refreshToken.setRevoked(true);
+        refreshTokenRepository.save(refreshToken);
+
+        User user = refreshToken.getUser();
+        return jwtTokenProvider.generateAccessAndRefreshTokens(user);
     }
 }

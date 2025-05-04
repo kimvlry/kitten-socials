@@ -17,6 +17,6 @@ spring:
     show-sql: true
 
 jwt:
-  # should be configured in .env file!
   secret: ${JWT_SECRET}
-  expiration: ${JWT_EXPIRATION}
+  access_token_expiration: ${JWT_ACCESS_EXPIRATION}
+  refresh_token_expiration: ${JWT_REFRESH_EXPIRATION}

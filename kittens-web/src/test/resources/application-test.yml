@@ -1,0 +1,4 @@
+jwt:
+  secret: test-secret
+  access_token_expiration: 300000
+  refresh_token_expiration: 1209600
