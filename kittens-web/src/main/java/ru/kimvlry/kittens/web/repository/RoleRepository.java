@@ -1,7 +1,7 @@
 package ru.kimvlry.kittens.web.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.kimvlry.kittens.web.security.role.Role;
+import ru.kimvlry.kittens.web.entities.Role;
 
 import java.util.Optional;
 

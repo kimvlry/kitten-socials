@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import ru.kimvlry.kittens.entities.Owner;
+import ru.kimvlry.kittens.web.entities.User;
 
 @Entity
 @Table(name = "user_owner_mapping")

@@ -1,9 +1,8 @@
-package ru.kimvlry.kittens.web.security.role;
+package ru.kimvlry.kittens.web.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import ru.kimvlry.kittens.web.security.user.User;
 
 import java.util.HashSet;
 import java.util.Set;

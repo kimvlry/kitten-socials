@@ -7,7 +7,7 @@ import ru.kimvlry.kittens.entities.Kitten;
 import ru.kimvlry.kittens.web.repository.KittenRepository;
 import ru.kimvlry.kittens.web.repository.UserOwnerMappingRepository;
 import ru.kimvlry.kittens.web.repository.UserRepository;
-import ru.kimvlry.kittens.web.security.user.User;
+import ru.kimvlry.kittens.web.entities.User;
 
 @Service
 public class SecurityService {
