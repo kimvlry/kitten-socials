@@ -7,10 +7,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kimvlry.kittens.entities.Owner;
-import ru.kimvlry.kittens.web.dto.auth.AuthRequest;
-import ru.kimvlry.kittens.web.dto.auth.RefreshRequest;
-import ru.kimvlry.kittens.web.dto.auth.RegistrationRequest;
-import ru.kimvlry.kittens.web.dto.auth.TokenPair;
+import ru.kimvlry.kittens.web.dto.security.AuthRequest;
+import ru.kimvlry.kittens.web.dto.security.RefreshRequest;
+import ru.kimvlry.kittens.web.dto.security.RegistrationRequest;
+import ru.kimvlry.kittens.web.dto.security.TokenPair;
 import ru.kimvlry.kittens.web.entities.RefreshToken;
 import ru.kimvlry.kittens.web.repository.*;
 import ru.kimvlry.kittens.web.security.jwt.JwtTokenProvider;
@@ -74,7 +74,7 @@ public class AuthService {
 
         Owner owner = new Owner();
         owner.setName(request.name());
-        owner.setBirthTimestamp(request.birthDate());
+        owner.setBirthDate(request.birthDate());
         owner = ownerRepository.save(owner);
 
         UserOwnerMapping mapping = new UserOwnerMapping();
