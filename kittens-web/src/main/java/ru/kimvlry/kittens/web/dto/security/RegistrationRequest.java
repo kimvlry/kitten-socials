@@ -1,12 +1,12 @@
-package ru.kimvlry.kittens.web.dto.auth;
+package ru.kimvlry.kittens.web.dto.security;
 
-import java.time.Instant;
+import java.util.Date;
 
 public record RegistrationRequest(
         String username,
         String password,
         String email,
         String name,
-        Instant birthDate
+        Date birthDate
 ) {
 }

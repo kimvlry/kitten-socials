@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.dto.auth;
+package ru.kimvlry.kittens.web.dto.security;
 
 public record AuthRequest (
         String username,
