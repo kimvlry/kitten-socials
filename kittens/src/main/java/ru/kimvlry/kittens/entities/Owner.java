@@ -1,6 +1,7 @@
 package ru.kimvlry.kittens.entities;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.Set;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,8 +19,8 @@ public class Owner {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "birth_timestamp")
-    private Instant birthTimestamp;
+    @Column(name = "birth_date")
+    private Date birthDate;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Kitten> ownedKittens;

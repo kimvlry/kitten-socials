@@ -42,13 +42,13 @@ public class KittenSpecifications {
     public static Specification<Kitten> bornBetween(Instant from, Instant to) {
         return (root, query, criteriaBuilder) -> {
             if (from != null && to != null) {
-                return criteriaBuilder.between(root.get("birthTimestamp"), from, to);
+                return criteriaBuilder.between(root.get("birthDate"), from, to);
             }
             if (from != null) {
-                return criteriaBuilder.greaterThanOrEqualTo(root.get("birthTimestamp"), from);
+                return criteriaBuilder.greaterThanOrEqualTo(root.get("birthDate"), from);
             }
             if (to != null) {
-                return criteriaBuilder.lessThanOrEqualTo(root.get("birthTimestamp"), to);
+                return criteriaBuilder.lessThanOrEqualTo(root.get("birthDate"), to);
             }
             return null;
         };

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.Set;
 
 @Getter
@@ -14,10 +14,10 @@ public class OwnerFilter {
     private String name;
 
     @Schema(description = "Born after this date")
-    private Instant birthAfter;
+    private Date birthAfter;
 
     @Schema(description = "Born before this date")
-    private Instant birthBefore;
+    private Date birthBefore;
 
     @Schema(description = "Owned kittens' IDs to match")
     private Set<Long> ownedKittensIds;

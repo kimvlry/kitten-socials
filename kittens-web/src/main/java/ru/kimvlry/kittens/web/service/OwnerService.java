@@ -45,8 +45,8 @@ public class OwnerService {
         }
 
         if (filter.getBirthAfter() != null || filter.getBirthBefore() != null) {
-            Instant from = filter.getBirthAfter() != null ? filter.getBirthAfter() : Instant.MIN;
-            Instant to = filter.getBirthBefore() != null ? filter.getBirthBefore() : Instant.MAX;
+            Instant from = filter.getBirthAfter() != null ? filter.getBirthAfter().toInstant() : Instant.MIN;
+            Instant to = filter.getBirthBefore() != null ? filter.getBirthBefore().toInstant() : Instant.MAX;
             spec = spec.and(OwnerSpecifications.bornBetween(from, to));
         }
 
@@ -59,7 +59,7 @@ public class OwnerService {
 
     private void fillOwnerFromDto(Owner owner, OwnerDto dto) {
         owner.setName(dto.name());
-        owner.setBirthTimestamp(dto.birthTimestamp());
+        owner.setBirthDate(dto.birthDate());
 
         if (dto.ownedKittensIds() == null || dto.ownedKittensIds().isEmpty()) {
             owner.setOwnedKittens(new HashSet<>());
