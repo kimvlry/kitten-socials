@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:8080
-@kittensPath = /api/kittens
+@kittensPath = /kittens
 @searchEndpoint = {{baseUrl}}{{kittensPath}}/search
 @getByIdEndpoint = {{baseUrl}}{{kittensPath}}/1
 
