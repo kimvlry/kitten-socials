@@ -6,7 +6,7 @@ import lombok.Setter;
 import ru.kimvlry.kittens.entities.KittenBreed;
 import ru.kimvlry.kittens.entities.KittenCoatColor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 @Getter
@@ -29,10 +29,10 @@ public class KittenFilter {
     private Integer maxPurr;
 
     @Schema(description = "Born after this date")
-    private LocalDateTime birthAfter;
+    private Instant birthAfter;
 
     @Schema(description = "Born before this date")
-    private LocalDateTime birthBefore;
+    private Instant birthBefore;
 
     @Schema(description = "Owner IDs to match")
     private Set<Long> ownerIds;

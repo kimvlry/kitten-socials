@@ -19,7 +19,6 @@ import ru.kimvlry.kittens.web.entities.User;
 import ru.kimvlry.kittens.web.security.user.UserOwnerMapping;
 
 import java.time.Instant;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.Collections;
 
 
@@ -106,7 +105,7 @@ public class AuthService {
             throw new IllegalArgumentException("Token has been revoked");
         }
 
-        if (refreshToken.getExpiryDate().isBefore(ChronoLocalDateTime.from(Instant.now()))) {
+        if (refreshToken.getExpiryDate().isBefore(Instant.now())) {
             throw new IllegalArgumentException("Token has expired");
         }
 

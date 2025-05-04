@@ -31,20 +31,21 @@ CREATE TABLE IF NOT EXISTS owners
 (
     id              BIGSERIAL PRIMARY KEY,
     name            VARCHAR(255) NOT NULL UNIQUE,
-    birth_timestamp TIMESTAMP
+    birth_timestamp TIMESTAMPTZ
 );
 
 CREATE TABLE IF NOT EXISTS kittens
 (
     id              BIGSERIAL PRIMARY KEY,
-    name            VARCHAR(255) NOT NULL,
-    birth_timestamp TIMESTAMP,
-    breed           kitten_breed NOT NULL,
+    name            VARCHAR(255)      NOT NULL,
+    birth_timestamp TIMESTAMPTZ,
+    breed           kitten_breed      NOT NULL,
     coat_color      kitten_coat_color NOT NULL,
-    owner_id        BIGINT NOT NULL REFERENCES owners (id) ON DELETE CASCADE
+    owner_id        BIGINT            NOT NULL REFERENCES owners (id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS friendship (
+CREATE TABLE IF NOT EXISTS friendship
+(
     kitten1_id BIGINT NOT NULL REFERENCES kittens (id) ON DELETE CASCADE,
     kitten2_id BIGINT NOT NULL REFERENCES kittens (id) ON DELETE CASCADE,
     PRIMARY KEY (kitten1_id, kitten2_id)

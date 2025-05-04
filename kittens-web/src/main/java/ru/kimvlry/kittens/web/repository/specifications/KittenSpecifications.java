@@ -5,7 +5,7 @@ import ru.kimvlry.kittens.entities.Kitten;
 import ru.kimvlry.kittens.entities.KittenBreed;
 import ru.kimvlry.kittens.entities.KittenCoatColor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 public class KittenSpecifications {
@@ -39,7 +39,7 @@ public class KittenSpecifications {
         };
     }
 
-    public static Specification<Kitten> bornBetween(LocalDateTime from, LocalDateTime to) {
+    public static Specification<Kitten> bornBetween(Instant from, Instant to) {
         return (root, query, criteriaBuilder) -> {
             if (from != null && to != null) {
                 return criteriaBuilder.between(root.get("birthTimestamp"), from, to);

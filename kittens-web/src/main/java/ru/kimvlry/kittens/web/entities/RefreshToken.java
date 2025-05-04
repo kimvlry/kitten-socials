@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+
 
 @Entity
 @Table(name = "refresh_tokens")
@@ -21,7 +22,7 @@ public class RefreshToken {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private LocalDateTime expiryDate;
+    private Instant expiryDate;
 
     private boolean revoked = false;
 }

@@ -15,7 +15,7 @@ import ru.kimvlry.kittens.web.repository.specifications.KittenSpecifications;
 import ru.kimvlry.kittens.web.repository.OwnerRepository;
 import ru.kimvlry.kittens.web.service.filters.KittenFilter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -60,8 +60,8 @@ public class KittenService {
         }
 
         if (filter.getBirthAfter() != null || filter.getBirthBefore() != null) {
-            LocalDateTime from = filter.getBirthAfter() != null ? filter.getBirthAfter() : LocalDateTime.MIN;
-            LocalDateTime to = filter.getBirthBefore() != null ? filter.getBirthBefore() : LocalDateTime.MAX;
+            Instant from = filter.getBirthAfter() != null ? filter.getBirthAfter() : Instant.MIN;
+            Instant to = filter.getBirthBefore() != null ? filter.getBirthBefore() : Instant.MAX;
             spec = spec.and(KittenSpecifications.bornBetween(from, to));
         }
 

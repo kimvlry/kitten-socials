@@ -3,7 +3,7 @@ package ru.kimvlry.kittens.web.repository.specifications;
 import org.springframework.data.jpa.domain.Specification;
 import ru.kimvlry.kittens.entities.Owner;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 public class OwnerSpecifications {
@@ -12,7 +12,7 @@ public class OwnerSpecifications {
                 name == null ? null : criteriaBuilder.equal(root.get("name"), name));
     }
 
-    public static Specification<Owner> bornBetween(LocalDateTime from, LocalDateTime to) {
+    public static Specification<Owner> bornBetween(Instant from, Instant to) {
         return (root, query, criteriaBuilder) -> {
             if (from != null && to != null) {
                 return criteriaBuilder.between(root.get("birthTimestamp"), from, to);

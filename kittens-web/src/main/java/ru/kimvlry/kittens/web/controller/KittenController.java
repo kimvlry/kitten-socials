@@ -15,7 +15,7 @@ import ru.kimvlry.kittens.web.security.annotation.IsKittenOwner;
 import ru.kimvlry.kittens.web.service.filters.KittenFilter;
 import ru.kimvlry.kittens.web.service.KittenService;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 @PreAuthorize("isAuthenticated()")
@@ -52,8 +52,8 @@ public class KittenController {
             @RequestParam(required = false) Set<KittenCoatColor> coat,
             @RequestParam(required = false) Integer minPurr,
             @RequestParam(required = false) Integer maxPurr,
-            @RequestParam(required = false) LocalDateTime birthAfter,
-            @RequestParam(required = false) LocalDateTime birthBefore,
+            @RequestParam(required = false) Instant birthAfter,
+            @RequestParam(required = false) Instant birthBefore,
             @RequestParam(required = false) Set<Long> ownerIds,
             @RequestParam(required = false) Set<Long> friendIds,
             @ParameterObject Pageable pageable

@@ -18,7 +18,6 @@ import ru.kimvlry.kittens.web.entities.User;
 import ru.kimvlry.kittens.web.repository.RefreshTokenRepository;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -79,7 +78,7 @@ public class JwtTokenProvider {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setToken(refresh);
-        refreshToken.setExpiryDate(LocalDateTime.from(Instant.now().plusMillis(refreshExpirationMs)));
+        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshExpirationMs));
         refreshTokenRepository.save(refreshToken);
 
         return new TokenPair(access, refresh);
