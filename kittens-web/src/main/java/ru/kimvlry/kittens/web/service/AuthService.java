@@ -85,6 +85,7 @@ public class AuthService {
         return jwtTokenProvider.generateAccessAndRefreshTokens(user);
     }
 
+    @Transactional
     public TokenPair login(AuthRequest request) {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -92,9 +93,10 @@ public class AuthService {
                         request.password()
                 )
         );
-        return jwtTokenProvider.generateAccessAndRefreshTokens(authentication);
+        return jwtTokenProvider.updAccessAndRefreshTokens(authentication);
     }
 
+    @Transactional
     public TokenPair refresh(RefreshRequest request) {
         String token = request.refreshToken();
 
@@ -105,7 +107,7 @@ public class AuthService {
             throw new IllegalArgumentException("Token has been revoked");
         }
 
-        if (refreshToken.getExpiryDate().isBefore(Instant.now())) {
+        if (refreshToken.getExpiryTimestamp().isBefore(Instant.now())) {
             throw new IllegalArgumentException("Token has expired");
         }
 

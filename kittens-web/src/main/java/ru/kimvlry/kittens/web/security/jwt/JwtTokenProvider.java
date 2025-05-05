@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import ru.kimvlry.kittens.web.dto.auth.TokenPair;
+import ru.kimvlry.kittens.web.dto.security.TokenPair;
 import ru.kimvlry.kittens.web.entities.RefreshToken;
 import ru.kimvlry.kittens.web.entities.Role;
 import ru.kimvlry.kittens.web.entities.User;
@@ -51,9 +51,11 @@ public class JwtTokenProvider {
         }
     }
 
-    public TokenPair generateAccessAndRefreshTokens(Authentication authentication) {
+    public TokenPair updAccessAndRefreshTokens(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = (User) userDetails;
+
+        refreshTokenRepository.deleteAllByUser(user);
 
         String authorities = userDetails.getAuthorities().stream()
                 .map(Object::toString)
@@ -78,7 +80,7 @@ public class JwtTokenProvider {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setToken(refresh);
-        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshExpirationMs));
+        refreshToken.setExpiryTimestamp(Instant.now().plusMillis(refreshExpirationMs));
         refreshTokenRepository.save(refreshToken);
 
         return new TokenPair(access, refresh);

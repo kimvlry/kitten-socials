@@ -21,9 +21,11 @@ import ru.kimvlry.kittens.web.security.jwt.JwtAuthFilter;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final AuthEntryPoint entryPoint;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, AuthEntryPoint entryPoint) {
         this.jwtAuthFilter = jwtAuthFilter;
+        this.entryPoint = entryPoint;
     }
 
     @Bean
@@ -31,11 +33,12 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
+                .exceptionHandling(e -> e.authenticationEntryPoint(entryPoint))
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/kittens/**").hasRole("USER")
                         .requestMatchers("/owners/**").hasRole("USER")
                         .anyRequest().authenticated()

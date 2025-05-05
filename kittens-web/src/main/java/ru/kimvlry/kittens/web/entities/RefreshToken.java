@@ -22,7 +22,7 @@ public class RefreshToken {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Instant expiryDate;
+    private Instant expiryTimestamp;
 
     private boolean revoked = false;
 }
