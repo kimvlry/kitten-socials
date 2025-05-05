@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,10 +19,13 @@ import ru.kimvlry.kittens.web.entities.User;
 import ru.kimvlry.kittens.web.repository.RefreshTokenRepository;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Getter
 @Component
 public class JwtTokenProvider {
@@ -56,7 +60,6 @@ public class JwtTokenProvider {
         User user = (User) userDetails;
 
         refreshTokenRepository.deleteAllByUser(user);
-
         String authorities = userDetails.getAuthorities().stream()
                 .map(Object::toString)
                 .collect(Collectors.joining(","));
@@ -103,7 +106,18 @@ public class JwtTokenProvider {
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(jwtSecret))
                 .build()
                 .verify(token);
-        return decodedJWT.getSubject();
+        String username = decodedJWT.getSubject();
+        log.debug("Extracted username from token: {}", username);
+        return username;
+    }
+
+    public List<String> getRolesFromToken(String token) {
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(jwtSecret))
+                .build()
+                .verify(token);
+        String roles = decodedJWT.getClaim("roles").asString();
+        log.debug("Extracted roles from token: {}", roles);
+        return Arrays.asList(roles.split(","));
     }
 
     public boolean validateToken(String accessToken) {
@@ -114,6 +128,7 @@ public class JwtTokenProvider {
             return true;
         }
         catch (JWTVerificationException e) {
+            log.error("failed to validate access token", e);
             return false;
         }
     }

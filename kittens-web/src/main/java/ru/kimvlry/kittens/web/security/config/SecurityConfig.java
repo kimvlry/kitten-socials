@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.security;
+package ru.kimvlry.kittens.web.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

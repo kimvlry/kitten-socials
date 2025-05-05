@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.security;
+package ru.kimvlry.kittens.web.security.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

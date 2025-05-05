@@ -1,4 +1,4 @@
 jwt:
   secret: test-secret
-  access_token_expiration: 300000
-  refresh_token_expiration: 1209600
+  access_token_expiration: 900000      # 15 min
+  refresh_token_expiration: 1209600000 # 2 weeks
