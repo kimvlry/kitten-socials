@@ -1,6 +1,7 @@
 package ru.kimvlry.kittens.web.service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -54,7 +55,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenPair register(RegistrationRequest request) {
+    public TokenPair register(@Valid RegistrationRequest request) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
             throw new IllegalArgumentException("Username already exists");
         }
@@ -86,7 +87,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenPair login(AuthRequest request) {
+    public TokenPair login(@Valid AuthRequest request) {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.username(),
@@ -97,7 +98,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenPair refresh(RefreshRequest request) {
+    public TokenPair refresh(@Valid RefreshRequest request) {
         String token = request.refreshToken();
 
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)

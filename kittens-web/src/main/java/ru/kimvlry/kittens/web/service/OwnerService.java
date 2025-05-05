@@ -1,6 +1,7 @@
 package ru.kimvlry.kittens.web.service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -57,7 +58,7 @@ public class OwnerService {
         return ownerRepository.findAll(spec, pageable).map(ownerMapper::toDto);
     }
 
-    private void fillOwnerFromDto(Owner owner, OwnerDto dto) {
+    private void fillOwnerFromDto(Owner owner, @Valid OwnerDto dto) {
         owner.setName(dto.name());
         owner.setBirthDate(dto.birthDate());
 
@@ -71,7 +72,7 @@ public class OwnerService {
     }
 
     @Transactional
-    public OwnerDto createOwner(OwnerDto dto) {
+    public OwnerDto createOwner(@Valid OwnerDto dto) {
         Owner owner = new Owner();
         fillOwnerFromDto(owner, dto);
         Owner saved = ownerRepository.save(owner);
@@ -79,7 +80,7 @@ public class OwnerService {
     }
 
     @Transactional
-    public OwnerDto updateOwner(Long id, OwnerDto dto) {
+    public OwnerDto updateOwner(Long id, @Valid OwnerDto dto) {
         Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("owner", id));
         fillOwnerFromDto(owner, dto);

@@ -3,6 +3,7 @@ package ru.kimvlry.kittens.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,14 +55,14 @@ public class OwnerController {
     @IsOwnerOrAdmin
     @Operation(summary = "Update an existing owner")
     @PutMapping("/{id}")
-    public OwnerDto updateOwner(@PathVariable Long id, @RequestBody OwnerDto dto) {
+    public OwnerDto updateOwner(@PathVariable Long id, @Valid @RequestBody OwnerDto dto) {
         return ownerService.updateOwner(id, dto);
     }
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create a new owner")
     @PostMapping
-    public OwnerDto createOwner(@RequestBody OwnerDto ownerDto) {
+    public OwnerDto createOwner(@Valid @RequestBody OwnerDto ownerDto) {
         return ownerService.createOwner(ownerDto);
     }
 

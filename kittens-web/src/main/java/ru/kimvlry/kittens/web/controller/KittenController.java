@@ -2,6 +2,8 @@ package ru.kimvlry.kittens.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import ru.kimvlry.kittens.web.service.KittenService;
 import java.time.Instant;
 import java.util.Set;
 
+@Slf4j
 @PreAuthorize("isAuthenticated()")
 @Tag(name = "Kittens", description = "Endpoints for kitten catalog search and management")
 @RestController
@@ -74,14 +77,15 @@ public class KittenController {
     @IsKittenOwner
     @Operation(summary = "Update an existing kitten")
     @PutMapping("/{id}")
-    public KittenDto updateKitten(@PathVariable Long id, @RequestBody KittenDto dto) {
+    public KittenDto updateKitten(@PathVariable Long id, @Valid @RequestBody KittenDto dto) {
+        log.debug("Received id: {}, dto: {}", id, dto);
         return kittenService.updateKitten(id, dto);
     }
 
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Create a new kitten")
     @PostMapping
-    public KittenDto createKitten(@RequestBody KittenDto kittenDto) {
+    public KittenDto createKitten(@Valid @RequestBody KittenDto kittenDto) {
         return kittenService.createKitten(kittenDto);
     }
 

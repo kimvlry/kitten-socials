@@ -1,6 +1,7 @@
 package ru.kimvlry.kittens.web.service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -76,20 +77,15 @@ public class KittenService {
         return kittenRepository.findAll(spec, pageable).map(kittenMapper::toDto);
     }
 
-    private void fillKittenFromDto(Kitten kitten, KittenDto dto) {
+    private void fillKittenFromDto(Kitten kitten, @Valid KittenDto dto) {
         kitten.setName(dto.name());
         kitten.setBirthDate(dto.birthDate());
         kitten.setBreed(dto.breed());
         kitten.setCoatColor(dto.coatColor());
         kitten.setPurrLoudnessRate(dto.purrLoudnessRate());
 
-        if (dto.ownerId() == null) {
-            throw new NonNullableException("owner");
-        }
-        else {
-            kitten.setOwner(ownerRepository.findById(dto.ownerId())
+        kitten.setOwner(ownerRepository.findById(dto.ownerId())
                     .orElseThrow(() -> new EntityNotFoundException("owner", dto.ownerId())));
-        }
 
         if (dto.friendIds() == null || dto.friendIds().isEmpty()) {
             kitten.setFriends(null);
@@ -101,7 +97,7 @@ public class KittenService {
     }
 
     @Transactional
-    public KittenDto updateKitten(Long id, KittenDto dto) {
+    public KittenDto updateKitten(Long id, @Valid KittenDto dto) {
         Kitten kitten = kittenRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("kitten", id));
 
@@ -111,7 +107,7 @@ public class KittenService {
     }
 
     @Transactional
-    public KittenDto createKitten(KittenDto dto) {
+    public KittenDto createKitten(@Valid KittenDto dto) {
         Kitten kitten = new Kitten();
 
         fillKittenFromDto(kitten, dto);
