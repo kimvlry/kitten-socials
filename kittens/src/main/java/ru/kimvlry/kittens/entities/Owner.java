@@ -1,6 +1,5 @@
 package ru.kimvlry.kittens.entities;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.Set;
 import jakarta.persistence.*;

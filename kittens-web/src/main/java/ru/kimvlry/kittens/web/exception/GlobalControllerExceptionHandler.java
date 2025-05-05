@@ -1,14 +1,17 @@
 package ru.kimvlry.kittens.web.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,6 +39,13 @@ public class GlobalControllerExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
+        log.warn("Authentication failed: {}", ex.getMessage(), ex);
+        ErrorResponse error = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), "Not Authorized", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult().getFieldErrors().stream()
@@ -60,4 +70,21 @@ public class GlobalControllerExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ValidationErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
+        List<Violation> violations = ex.getConstraintViolations().stream()
+                .map(cv -> new Violation(cv.getPropertyPath().toString(), cv.getMessage()))
+                .collect(Collectors.toList());
+
+        ValidationErrorResponse body = new ValidationErrorResponse(400, "Validation failed", violations);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    public record Violation(String field, String message) {
+    }
+
+    public record ValidationErrorResponse(int status,
+                                          String error,
+                                          List<Violation> violations) {
+    }
 }

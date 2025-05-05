@@ -13,11 +13,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:3.4.5")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.4.5")
     implementation("org.springframework.boot:spring-boot-starter-security:3.4.5")
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.4.5")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
 
     testImplementation("org.springframework.security:spring-security-test:6.4.5")
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.4.5")
+    testImplementation("org.mockito:mockito-core:5.17.0")
 
     implementation("jakarta.validation:jakarta.validation-api:3.1.1")
     implementation("org.mapstruct:mapstruct:1.6.3")
