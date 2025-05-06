@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -26,7 +27,6 @@ import ru.kimvlry.kittens.web.security.utils.annotation.AnnotationUtils;
 import ru.kimvlry.kittens.web.security.utils.config.SecurityConfig;
 import ru.kimvlry.kittens.web.security.utils.jwt.JwtAuthFilter;
 import ru.kimvlry.kittens.web.security.utils.jwt.JwtTokenProvider;
-import ru.kimvlry.kittens.web.service.KittenService;
 import ru.kimvlry.kittens.web.service.OwnerService;
 
 import java.util.Collections;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@WebMvcTest(controllers = OwnerController.class)
 @Import(SecurityConfig.class)
 @AutoConfigureMockMvc(addFilters = false)
 class OwnerControllerTests {
