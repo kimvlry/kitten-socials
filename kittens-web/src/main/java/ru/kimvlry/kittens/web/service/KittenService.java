@@ -1,5 +1,6 @@
 package ru.kimvlry.kittens.web.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import ru.kimvlry.kittens.web.entities.Kitten;
 import ru.kimvlry.kittens.web.dto.KittenDto;
 import ru.kimvlry.kittens.web.dto.mappers.KittenMapper;
-import ru.kimvlry.kittens.web.error.handling.EntityNotFoundException;
 import ru.kimvlry.kittens.web.repository.KittenRepository;
 import ru.kimvlry.kittens.web.repository.specifications.KittenSpecifications;
 import ru.kimvlry.kittens.web.repository.OwnerRepository;
@@ -37,7 +37,7 @@ public class KittenService {
     public KittenDto getKittenById(Long id) {
         return kittenRepository.findById(id)
                 .map(kittenMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("kitten", id));
+                .orElseThrow(() -> new EntityNotFoundException("kitten " + id));
     }
 
     public Page<KittenDto> getKittensFiltered(KittenFilter filter, Pageable pageable) {
@@ -75,7 +75,11 @@ public class KittenService {
             spec = spec.and(KittenSpecifications.hasFriends(filter.getFriendIds()));
         }
 
-        return kittenRepository.findAll(spec, pageable).map(kittenMapper::toDto);
+        Page<Kitten> found = kittenRepository.findAll(spec, pageable);
+        if (found.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+        return found.map(kittenMapper::toDto);
     }
 
     private void fillKittenFromDto(Kitten kitten, @Valid KittenDto dto) {
@@ -86,7 +90,7 @@ public class KittenService {
         kitten.setPurrLoudnessRate(dto.purrLoudnessRate());
 
         kitten.setOwner(ownerRepository.findById(dto.ownerId())
-                    .orElseThrow(() -> new EntityNotFoundException("owner", dto.ownerId())));
+                    .orElseThrow(() -> new EntityNotFoundException("owner " + dto.ownerId())));
 
         if (dto.friendIds() == null || dto.friendIds().isEmpty()) {
             kitten.setFriends(null);
@@ -100,7 +104,7 @@ public class KittenService {
     @Transactional
     public KittenDto updateKitten(Long id, @Valid KittenDto dto) {
         Kitten kitten = kittenRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("kitten", id));
+                .orElseThrow(() -> new EntityNotFoundException("kitten " + id));
 
         fillKittenFromDto(kitten, dto);
         Kitten updated = kittenRepository.save(kitten);
@@ -119,7 +123,7 @@ public class KittenService {
     @Transactional
     public void deleteKitten(Long id) {
         if (!kittenRepository.existsById(id)) {
-            throw new EntityNotFoundException("kitten", id);
+            throw new EntityNotFoundException("kitten " + id);
         }
         kittenRepository.deleteById(id);
     }

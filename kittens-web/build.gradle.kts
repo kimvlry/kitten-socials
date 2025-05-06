@@ -34,8 +34,12 @@ dependencies {
 
     implementation("jakarta.validation:jakarta.validation-api:3.1.1")
     implementation("org.mapstruct:mapstruct:1.6.3")
-    implementation("org.yaml:snakeyaml:2.4")
     implementation("com.auth0:java-jwt:4.5.0")
+
+    implementation("org.yaml:snakeyaml:2.3")
+    implementation("com.github.javafaker:javafaker:1.0.2") {
+        exclude(group = "org.yaml", module = "snakeyaml")
+    }
 
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 }

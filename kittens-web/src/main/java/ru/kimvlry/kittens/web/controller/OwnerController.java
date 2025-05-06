@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.kimvlry.kittens.web.dto.OwnerDto;
-import ru.kimvlry.kittens.web.security.utils.annotation.IsOwnerOrAdmin;
 import ru.kimvlry.kittens.web.service.filters.OwnerFilter;
 import ru.kimvlry.kittens.web.service.OwnerService;
 
@@ -40,23 +39,13 @@ public class OwnerController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @Operation(
-            summary = "Search owners with filter",
-            description = "Search owners using flexible filters like name, birth date, and owned kittens."
-    )
+    @Operation(summary = "Search owners with filter")
     @GetMapping("/search")
     public Page<OwnerDto> searchOwners(
             @RequestBody OwnerFilter filter,
             @ParameterObject Pageable pageable
     ) {
         return ownerService.getOwnersFiltered(filter, pageable);
-    }
-
-    @IsOwnerOrAdmin
-    @Operation(summary = "Update an existing owner")
-    @PutMapping("/{id}")
-    public OwnerDto updateOwner(@PathVariable Long id, @Valid @RequestBody OwnerDto dto) {
-        return ownerService.updateOwner(id, dto);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -66,7 +55,14 @@ public class OwnerController {
         return ownerService.createOwner(ownerDto);
     }
 
-    @IsOwnerOrAdmin
+    @PreAuthorize("@annotationUtils.isOwnerOrAdmin(authentication.name, #id)")
+    @Operation(summary = "Update an existing owner")
+    @PutMapping("/{id}")
+    public OwnerDto updateOwner(@PathVariable Long id, @Valid @RequestBody OwnerDto dto) {
+        return ownerService.updateOwner(id, dto);
+    }
+
+    @PreAuthorize("@annotationUtils.isOwnerOrAdmin(authentication.name, #id)")
     @Operation(summary = "Delete an owner by ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -1,5 +1,6 @@
 package ru.kimvlry.kittens.web.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,6 @@ import ru.kimvlry.kittens.web.entities.Kitten;
 import ru.kimvlry.kittens.web.entities.Owner;
 import ru.kimvlry.kittens.web.dto.OwnerDto;
 import ru.kimvlry.kittens.web.dto.mappers.OwnerMapper;
-import ru.kimvlry.kittens.web.error.handling.EntityNotFoundException;
 import ru.kimvlry.kittens.web.repository.KittenRepository;
 import ru.kimvlry.kittens.web.repository.OwnerRepository;
 import ru.kimvlry.kittens.web.repository.specifications.OwnerSpecifications;
@@ -37,7 +37,7 @@ public class OwnerService {
     public OwnerDto getOwnerById(long id) {
         return ownerRepository.findById(id)
                 .map(ownerMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("owner", id));
+                .orElseThrow(() -> new EntityNotFoundException("owner " + id));
     }
 
     public Page<OwnerDto> getOwnersFiltered(OwnerFilter filter, Pageable pageable) {
@@ -84,7 +84,8 @@ public class OwnerService {
     @Transactional
     public OwnerDto updateOwner(Long id, @Valid OwnerDto dto) {
         Owner owner = ownerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("owner", id));
+                .orElseThrow(() -> new EntityNotFoundException("owner " + id));
+
         fillOwnerFromDto(owner, dto);
         Owner updated = ownerRepository.save(owner);
         return ownerMapper.toDto(updated);
@@ -93,7 +94,7 @@ public class OwnerService {
     @Transactional
     public void deleteOwner(Long id) {
         if (!ownerRepository.existsById(id)) {
-            throw new EntityNotFoundException("owner", id);
+            throw new EntityNotFoundException("owner " + id);
         }
         ownerRepository.deleteById(id);
     }
