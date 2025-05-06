@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.entities;
+package ru.kimvlry.kittens.web.entities;
 
 import java.time.Instant;
 import java.util.HashSet;

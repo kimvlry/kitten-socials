@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.entities;
+package ru.kimvlry.kittens.web.entities;
 
 import java.util.Date;
 import java.util.Set;
