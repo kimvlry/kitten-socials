@@ -3,8 +3,8 @@ package ru.kimvlry.kittens.web.service.filters;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-import ru.kimvlry.kittens.entities.KittenBreed;
-import ru.kimvlry.kittens.entities.KittenCoatColor;
+import ru.kimvlry.kittens.web.entities.KittenBreed;
+import ru.kimvlry.kittens.web.entities.KittenCoatColor;
 
 import java.time.Instant;
 import java.util.Set;

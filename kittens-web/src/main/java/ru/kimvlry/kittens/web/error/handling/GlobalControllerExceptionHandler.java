@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.exception;
+package ru.kimvlry.kittens.web.error.handling;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;

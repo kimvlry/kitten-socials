@@ -1,24 +1,24 @@
-package ru.kimvlry.kittens.web.service;
+package ru.kimvlry.kittens.web.security.utils.annotation;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import ru.kimvlry.kittens.entities.Kitten;
+import ru.kimvlry.kittens.web.entities.Kitten;
 import ru.kimvlry.kittens.web.repository.KittenRepository;
-import ru.kimvlry.kittens.web.repository.UserOwnerMappingRepository;
-import ru.kimvlry.kittens.web.repository.UserRepository;
-import ru.kimvlry.kittens.web.entities.User;
+import ru.kimvlry.kittens.web.repository.security.UserOwnerMappingRepository;
+import ru.kimvlry.kittens.web.repository.security.UserRepository;
+import ru.kimvlry.kittens.web.entities.security.User;
 
 @Service
-public class SecurityService {
+public class SecurityAnnotationUtils {
 
     private final KittenRepository kittenRepository;
     private final UserOwnerMappingRepository userOwnerMappingRepository;
     private final UserRepository userRepository;
 
-    public SecurityService(KittenRepository kittenRepository,
-                           UserOwnerMappingRepository userOwnerMappingRepository,
-                           UserRepository userRepository
+    public SecurityAnnotationUtils(KittenRepository kittenRepository,
+                                   UserOwnerMappingRepository userOwnerMappingRepository,
+                                   UserRepository userRepository
     ) {
         this.kittenRepository = kittenRepository;
         this.userOwnerMappingRepository = userOwnerMappingRepository;

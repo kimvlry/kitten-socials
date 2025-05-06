@@ -1,10 +1,10 @@
-package ru.kimvlry.kittens.web.security.user;
+package ru.kimvlry.kittens.web.security.utils.user;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.kimvlry.kittens.web.repository.UserRepository;
+import ru.kimvlry.kittens.web.repository.security.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

@@ -1,7 +1,7 @@
-package ru.kimvlry.kittens.web.repository;
+package ru.kimvlry.kittens.web.repository.security;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.kimvlry.kittens.web.security.user.UserOwnerMapping;
+import ru.kimvlry.kittens.web.security.utils.user.UserOwnerMapping;
 
 import java.util.Optional;
 

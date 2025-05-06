@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.service;
+package ru.kimvlry.kittens.web.service.security;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -7,17 +7,21 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.kimvlry.kittens.entities.Owner;
+import ru.kimvlry.kittens.web.entities.Owner;
 import ru.kimvlry.kittens.web.dto.security.AuthRequest;
 import ru.kimvlry.kittens.web.dto.security.RefreshRequest;
 import ru.kimvlry.kittens.web.dto.security.RegistrationRequest;
 import ru.kimvlry.kittens.web.dto.security.TokenPair;
-import ru.kimvlry.kittens.web.entities.RefreshToken;
+import ru.kimvlry.kittens.web.entities.security.RefreshToken;
 import ru.kimvlry.kittens.web.repository.*;
-import ru.kimvlry.kittens.web.security.jwt.JwtTokenProvider;
-import ru.kimvlry.kittens.web.entities.Role;
-import ru.kimvlry.kittens.web.entities.User;
-import ru.kimvlry.kittens.web.security.user.UserOwnerMapping;
+import ru.kimvlry.kittens.web.repository.security.RefreshTokenRepository;
+import ru.kimvlry.kittens.web.repository.security.RoleRepository;
+import ru.kimvlry.kittens.web.repository.security.UserOwnerMappingRepository;
+import ru.kimvlry.kittens.web.repository.security.UserRepository;
+import ru.kimvlry.kittens.web.security.utils.jwt.JwtTokenProvider;
+import ru.kimvlry.kittens.web.entities.security.Role;
+import ru.kimvlry.kittens.web.entities.security.User;
+import ru.kimvlry.kittens.web.security.utils.user.UserOwnerMapping;
 
 import java.time.Instant;
 import java.util.Collections;

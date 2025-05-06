@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.security.annotation;
+package ru.kimvlry.kittens.web.security.utils.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,6 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@securityService.isOwnerOrAdmin(authentication.name, #id)")
+@PreAuthorize("@securityAnnotationUtils.isOwnerOrAdmin(authentication.name, #id)")
 public @interface IsOwnerOrAdmin {
 }

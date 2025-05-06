@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.security.role;
+package ru.kimvlry.kittens.web.security.utils.role;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

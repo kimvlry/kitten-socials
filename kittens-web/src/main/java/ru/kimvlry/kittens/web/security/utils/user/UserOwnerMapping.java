@@ -1,10 +1,10 @@
-package ru.kimvlry.kittens.web.security.user;
+package ru.kimvlry.kittens.web.security.utils.user;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import ru.kimvlry.kittens.entities.Owner;
-import ru.kimvlry.kittens.web.entities.User;
+import ru.kimvlry.kittens.web.entities.Owner;
+import ru.kimvlry.kittens.web.entities.security.User;
 
 @Entity
 @Table(name = "user_owner_mapping")

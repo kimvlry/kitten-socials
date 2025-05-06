@@ -1,9 +1,9 @@
 package ru.kimvlry.kittens.web.repository.specifications;
 
 import org.springframework.data.jpa.domain.Specification;
-import ru.kimvlry.kittens.entities.Kitten;
-import ru.kimvlry.kittens.entities.KittenBreed;
-import ru.kimvlry.kittens.entities.KittenCoatColor;
+import ru.kimvlry.kittens.web.entities.Kitten;
+import ru.kimvlry.kittens.web.entities.KittenBreed;
+import ru.kimvlry.kittens.web.entities.KittenCoatColor;
 
 import java.time.Instant;
 import java.util.Set;

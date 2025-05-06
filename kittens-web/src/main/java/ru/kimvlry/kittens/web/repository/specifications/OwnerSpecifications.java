@@ -1,7 +1,7 @@
 package ru.kimvlry.kittens.web.repository.specifications;
 
 import org.springframework.data.jpa.domain.Specification;
-import ru.kimvlry.kittens.entities.Owner;
+import ru.kimvlry.kittens.web.entities.Owner;
 
 import java.time.Instant;
 import java.util.Set;

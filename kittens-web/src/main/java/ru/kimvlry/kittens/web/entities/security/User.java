@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.entities;
+package ru.kimvlry.kittens.web.entities.security;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.kimvlry.kittens.web.security.user.UserOwnerMapping;
+import ru.kimvlry.kittens.web.security.utils.user.UserOwnerMapping;
 
 import java.util.Collection;
 import java.util.HashSet;

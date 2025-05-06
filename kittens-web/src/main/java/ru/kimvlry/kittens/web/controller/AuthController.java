@@ -7,7 +7,7 @@ import ru.kimvlry.kittens.web.dto.security.AuthRequest;
 import ru.kimvlry.kittens.web.dto.security.RefreshRequest;
 import ru.kimvlry.kittens.web.dto.security.TokenPair;
 import ru.kimvlry.kittens.web.dto.security.RegistrationRequest;
-import ru.kimvlry.kittens.web.service.AuthService;
+import ru.kimvlry.kittens.web.service.security.AuthService;
 
 @RestController
 @RequestMapping("/auth")

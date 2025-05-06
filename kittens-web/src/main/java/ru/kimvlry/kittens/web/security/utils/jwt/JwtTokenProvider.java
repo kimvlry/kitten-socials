@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.security.jwt;
+package ru.kimvlry.kittens.web.security.utils.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -13,10 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import ru.kimvlry.kittens.web.dto.security.TokenPair;
-import ru.kimvlry.kittens.web.entities.RefreshToken;
-import ru.kimvlry.kittens.web.entities.Role;
-import ru.kimvlry.kittens.web.entities.User;
-import ru.kimvlry.kittens.web.repository.RefreshTokenRepository;
+import ru.kimvlry.kittens.web.entities.security.RefreshToken;
+import ru.kimvlry.kittens.web.entities.security.Role;
+import ru.kimvlry.kittens.web.entities.security.User;
+import ru.kimvlry.kittens.web.repository.security.RefreshTokenRepository;
 
 import java.time.Instant;
 import java.util.Arrays;

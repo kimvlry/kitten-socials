@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.exception;
+package ru.kimvlry.kittens.web.error.handling;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

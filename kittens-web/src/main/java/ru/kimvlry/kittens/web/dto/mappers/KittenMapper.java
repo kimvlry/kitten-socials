@@ -1,6 +1,6 @@
 package ru.kimvlry.kittens.web.dto.mappers;
 
-import ru.kimvlry.kittens.entities.Kitten;
+import ru.kimvlry.kittens.web.entities.Kitten;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.kimvlry.kittens.web.dto.KittenDto;

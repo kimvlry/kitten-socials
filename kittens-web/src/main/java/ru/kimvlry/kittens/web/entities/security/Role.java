@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.entities;
+package ru.kimvlry.kittens.web.entities.security;
 
 import jakarta.persistence.*;
 import lombok.Getter;

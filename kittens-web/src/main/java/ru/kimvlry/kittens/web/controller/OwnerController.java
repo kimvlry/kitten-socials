@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.kimvlry.kittens.web.dto.OwnerDto;
-import ru.kimvlry.kittens.web.security.annotation.IsOwnerOrAdmin;
+import ru.kimvlry.kittens.web.security.utils.annotation.IsOwnerOrAdmin;
 import ru.kimvlry.kittens.web.service.filters.OwnerFilter;
 import ru.kimvlry.kittens.web.service.OwnerService;
 

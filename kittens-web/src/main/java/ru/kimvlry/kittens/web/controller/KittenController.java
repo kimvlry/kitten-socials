@@ -10,10 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.kimvlry.kittens.entities.KittenBreed;
-import ru.kimvlry.kittens.entities.KittenCoatColor;
+import ru.kimvlry.kittens.web.entities.KittenBreed;
+import ru.kimvlry.kittens.web.entities.KittenCoatColor;
 import ru.kimvlry.kittens.web.dto.KittenDto;
-import ru.kimvlry.kittens.web.security.annotation.IsKittenOwner;
+import ru.kimvlry.kittens.web.security.utils.annotation.IsKittenOwner;
 import ru.kimvlry.kittens.web.service.filters.KittenFilter;
 import ru.kimvlry.kittens.web.service.KittenService;
 

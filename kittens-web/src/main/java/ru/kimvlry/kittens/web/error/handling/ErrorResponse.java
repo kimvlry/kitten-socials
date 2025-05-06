@@ -1,4 +1,4 @@
-package ru.kimvlry.kittens.web.exception;
+package ru.kimvlry.kittens.web.error.handling;
 
 public record ErrorResponse(
         int status,
