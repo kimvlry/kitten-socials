@@ -2,6 +2,7 @@ package ru.kimvlry.kittens.socials.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -31,8 +32,16 @@ public class KittenController {
         this.kittenService = kittenService;
     }
 
-    @GetMapping()
-    public String hello() {
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get all existing kittens")
+    @GetMapping
+    public Page<KittenDto> getKittens(@ParameterObject Pageable pageable) {
+        return kittenService.getAllKittens(pageable);
+    }
+
+    @PermitAll
+    @GetMapping("/ping")
+    public String ping() {
         return "Hello from kittens!";
     }
 

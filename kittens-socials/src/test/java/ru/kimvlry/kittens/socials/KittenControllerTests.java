@@ -34,8 +34,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -176,6 +175,21 @@ class KittenControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("breeds", "not a breed"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getKittens_unauthorized_returnsUnauthorized401() throws Exception {
+        mockMvc.perform(get("/kittens")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void getKittens_anon_returnsForbidden403() throws Exception {
+        mockMvc.perform(get("/kittens")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
     }
 
 

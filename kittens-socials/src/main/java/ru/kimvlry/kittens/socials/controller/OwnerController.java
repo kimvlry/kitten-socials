@@ -25,8 +25,15 @@ public class OwnerController {
         this.ownerService = ownerService;
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get all existing owners")
+    @GetMapping
+    public Page<OwnerDto> getKittens(@ParameterObject Pageable pageable) {
+        return ownerService.getAllOwners(pageable);
+    }
+
     @PermitAll
-    @GetMapping()
+    @GetMapping("/ping")
     public String hello() {
         return "Hello from owners!";
     }

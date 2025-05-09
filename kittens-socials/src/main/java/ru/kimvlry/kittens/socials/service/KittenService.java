@@ -40,6 +40,14 @@ public class KittenService {
                 .orElseThrow(() -> new EntityNotFoundException("kitten " + id));
     }
 
+    public Page<KittenDto> getAllKittens(Pageable pageable) {
+        Page<Kitten> found = kittenRepository.findAll(pageable);
+        if (found.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+        return found.map(kittenMapper::toDto);
+    }
+
     public Page<KittenDto> getKittensFiltered(KittenFilter filter, Pageable pageable) {
         Specification<Kitten> spec = Specification.where(null);
 

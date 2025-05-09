@@ -113,6 +113,21 @@ class OwnerControllerTests {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    void getOwners_unauthorized_returnsUnauthorized401() throws Exception {
+        mockMvc.perform(get("/owners")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void getOwners_anon_returnsForbidden403() throws Exception {
+        mockMvc.perform(get("/owners")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+    }
+
     // POST
 
     @Test

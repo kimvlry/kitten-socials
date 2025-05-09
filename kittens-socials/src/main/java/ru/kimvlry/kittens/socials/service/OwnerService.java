@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import ru.kimvlry.kittens.socials.dto.KittenDto;
 import ru.kimvlry.kittens.socials.entities.Kitten;
 import ru.kimvlry.kittens.socials.entities.Owner;
 import ru.kimvlry.kittens.socials.dto.OwnerDto;
@@ -32,6 +33,14 @@ public class OwnerService {
         this.ownerRepository = ownerRepository;
         this.kittenRepository = kittenRepository;
         this.ownerMapper = ownerMapper;
+    }
+
+    public Page<OwnerDto> getAllOwners(Pageable pageable) {
+        Page<Owner> found = ownerRepository.findAll(pageable);
+        if (found.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+        return found.map(ownerMapper::toDto);
     }
 
     public OwnerDto getOwnerById(long id) {
