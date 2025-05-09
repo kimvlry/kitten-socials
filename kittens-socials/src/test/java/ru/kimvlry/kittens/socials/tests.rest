@@ -1,101 +1,57 @@
 @baseUrl = http://localhost:8080
-@kittensPath = /kittens
-@searchEndpoint = {{baseUrl}}{{kittensPath}}/search
-@getByIdEndpoint = {{baseUrl}}{{kittensPath}}/1
+@contentType = application/json
+
+@access = <valid_access_token>
+@refresh = <valid_refresh_token>
 
 ###
 
-GET {{baseUrl}}{{kittensPath}}
-Accept: text/plain
-
-###
-
-GET {{getByIdEndpoint}}
-Accept: application/json
-
-###
-
-POST {{searchEndpoint}}?page=0&size=5
-Content-Type: application/json
-Accept: application/json
-
-{}
-
-###
-
-POST {{searchEndpoint}}?page=0&size=5
-Content-Type: application/json
-Accept: application/json
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
 
 {
-  "name": "Salem"
+  "username": "testUsername",
+  "password": "testPassword",
+  "email": "email@test.com",
+  "name": "testName",
+  "birthDate": "2025-05-09T19:36:27.279Z"
 }
 
+
 ###
 
-POST {{searchEndpoint}}?page=0&size=5
-Content-Type: application/json
-Accept: application/json
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
 
 {
-  "breeds": [
-    "SIBERIAN"
-  ]
+  "username": "testUsername",
+  "password": "testPassword"
 }
 
+
 ###
 
-POST {{searchEndpoint}}?page=0&size=5
+POST {{baseUrl}}/kittens
 Content-Type: application/json
-Accept: application/json
+Authorization: Bearer {{token}}
 
 {
-  "minPurr": 2,
-  "maxPurr": 9
+  "id": 0,
+  "name": "Salem",
+  "birthDate": "2025-05-09T19:42:12.513Z",
+  "breed": "BRITISH_SHORTHAIR",
+  "coatColor": "ESPRESSO",
+  "purrLoudnessRate": 1,
+  "ownerId": 7,
+  "friendIds": []
 }
 
-###
-
-POST {{searchEndpoint}}?page=0&size=5
-Content-Type: application/json
-Accept: application/json
-
-{
-  "ownerIds": [
-    1
-  ]
-}
 
 ###
-POST http://localhost:8080/api/auth/login
-Content-Type: application/json
-Accept: application/json
+
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
 
 {
-  "username": "val",
-  "password": "val"
-}
-
-###
-POST http://localhost:8080/api/auth/refresh
-Content-Type: application/json
-Accept: application/json
-
-{
-  "refreshToken": "cd930e12-01fc-401b-9e52-6ea85fac408d"
-}
-
-###
-POST {}
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9...
-{
-    "id": 1,
-    "name": "Kitkat",
-    "birthDate": "2025-05-05T09:55:57.707Z",
-    "breed": "BRITISH_SHORTHAIR",
-    "coatColor": "ESPRESSO",
-    "purrLoudnessRate": 3,
-    "ownerId": 6,
-    "friendIds": []
+  "refreshToken": "{{refresh}}"
 }
