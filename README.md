@@ -46,7 +46,7 @@ dopishu popozhe...
 
 |               |                              |
 |---------------|------------------------------|
-| Language      | Java 21                      |
+| Java standard | 21                           |
 | Framework     | Spring Boot                  |
 | Build Tool    | Gradle                       |
 | Database      | PostgreSQL                   |
