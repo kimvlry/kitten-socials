@@ -172,7 +172,7 @@ class OwnerControllerTests {
         OwnerDto request = new OwnerDto(id, name, birthday, Collections.emptySet());
         OwnerDto response = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isOwnerOrAdmin("test", id)).thenReturn(true);
+        when(annotationUtils.isOwner("test", id)).thenReturn(true);
         when(ownerService.updateOwner(eq(id), any(OwnerDto.class))).thenReturn(response);
 
         mockMvc.perform(put("/owners/{id}", id)
@@ -204,7 +204,7 @@ class OwnerControllerTests {
         Date birthday = faker.date().birthday();
         OwnerDto request = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isOwnerOrAdmin("test", id)).thenReturn(true);
+        when(annotationUtils.isOwner("test", id)).thenReturn(true);
         when(ownerService.updateOwner(eq(id), any(OwnerDto.class)))
                 .thenThrow(new EntityNotFoundException("Owner not found: " + id));
 
@@ -236,7 +236,7 @@ class OwnerControllerTests {
     @WithMockUser(username = "test", roles = {"ADMIN"})
     void deleteOwner_Success_ReturnsNoContent() throws Exception {
         long id = 1L;
-        when(annotationUtils.isOwnerOrAdmin("test", id)).thenReturn(true);
+        when(annotationUtils.isOwner("test", id)).thenReturn(true);
         doNothing().when(ownerService).deleteOwner(eq(id));
 
         mockMvc.perform(delete("/owners/{id}", id)
@@ -249,7 +249,7 @@ class OwnerControllerTests {
     @WithMockUser(username = "test", roles = {"ADMIN"})
     void deleteOwner_NotFound_Returns404() throws Exception {
         long id = 1L;
-        when(annotationUtils.isOwnerOrAdmin("test", id)).thenReturn(true);
+        when(annotationUtils.isOwner("test", id)).thenReturn(true);
         doThrow(new EntityNotFoundException("Owner not found: " + id)).when(ownerService).deleteOwner(eq(id));
 
         mockMvc.perform(delete("/owners/{id}", id)

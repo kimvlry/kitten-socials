@@ -57,8 +57,4 @@ public class AnnotationUtils {
                 .stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
     }
-
-    public boolean isOwnerOrAdmin(String username, Long ownerId) {
-        return isAdmin() || isOwner(username, ownerId);
-    }
 }
