@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.kimvlry.kittens.socials.entities.Kitten;
@@ -14,6 +15,7 @@ import ru.kimvlry.kittens.socials.dto.mappers.KittenMapper;
 import ru.kimvlry.kittens.socials.repository.KittenRepository;
 import ru.kimvlry.kittens.socials.repository.specifications.KittenSpecifications;
 import ru.kimvlry.kittens.socials.repository.OwnerRepository;
+import ru.kimvlry.kittens.socials.security.utils.annotation.ValidationUtils;
 import ru.kimvlry.kittens.socials.service.filters.KittenFilter;
 
 import java.time.Instant;
@@ -28,7 +30,11 @@ public class KittenService {
     private final OwnerRepository ownerRepository;
     private final KittenMapper kittenMapper;
 
-    public KittenService(KittenRepository kittenRepository, OwnerRepository ownerRepository, KittenMapper kittenMapper) {
+    public KittenService(
+            KittenRepository kittenRepository,
+            OwnerRepository ownerRepository,
+            KittenMapper kittenMapper
+    ) {
         this.kittenRepository = kittenRepository;
         this.ownerRepository = ownerRepository;
         this.kittenMapper = kittenMapper;
@@ -122,7 +128,6 @@ public class KittenService {
     @Transactional
     public KittenDto createKitten(@Valid KittenDto dto) {
         Kitten kitten = new Kitten();
-
         fillKittenFromDto(kitten, dto);
         Kitten saved = kittenRepository.save(kitten);
         return kittenMapper.toDto(saved);

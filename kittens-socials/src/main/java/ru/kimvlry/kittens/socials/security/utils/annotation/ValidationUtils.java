@@ -4,20 +4,23 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import ru.kimvlry.kittens.socials.dto.KittenDto;
 import ru.kimvlry.kittens.socials.entities.Kitten;
+import ru.kimvlry.kittens.socials.entities.Owner;
 import ru.kimvlry.kittens.socials.repository.KittenRepository;
 import ru.kimvlry.kittens.socials.repository.security.UserOwnerMappingRepository;
 import ru.kimvlry.kittens.socials.repository.security.UserRepository;
 import ru.kimvlry.kittens.socials.entities.security.User;
+import ru.kimvlry.kittens.socials.security.utils.user.UserOwnerMapping;
 
 @Service
-public class AnnotationUtils {
+public class ValidationUtils {
 
     private final KittenRepository kittenRepository;
     private final UserOwnerMappingRepository userOwnerMappingRepository;
     private final UserRepository userRepository;
 
-    public AnnotationUtils(KittenRepository kittenRepository,
+    public ValidationUtils(KittenRepository kittenRepository,
                            UserOwnerMappingRepository userOwnerMappingRepository,
                            UserRepository userRepository
     ) {
@@ -43,5 +46,23 @@ public class AnnotationUtils {
         return userOwnerMappingRepository
                 .findByUserIdAndOwnerId(user.getId(), ownerId)
                 .isPresent();
+    }
+
+    public boolean isOwnerAssigningKittenToAnotherOwner(KittenDto dto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new InsufficientAuthenticationException("No authenticated user found");
+        }
+
+        String username = authentication.getName();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
+
+        Owner currentOwner = userOwnerMappingRepository.findByUserId(user.getId())
+                .map(UserOwnerMapping::getOwner)
+                .orElseThrow(() -> new IllegalArgumentException("No Owner associated with user: " + username));
+
+        return !currentOwner.getId().equals(dto.ownerId());
     }
 }

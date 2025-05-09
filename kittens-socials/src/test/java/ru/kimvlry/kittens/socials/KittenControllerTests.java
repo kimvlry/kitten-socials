@@ -22,7 +22,7 @@ import ru.kimvlry.kittens.socials.repository.security.RefreshTokenRepository;
 import ru.kimvlry.kittens.socials.repository.security.RoleRepository;
 import ru.kimvlry.kittens.socials.repository.security.UserOwnerMappingRepository;
 import ru.kimvlry.kittens.socials.repository.security.UserRepository;
-import ru.kimvlry.kittens.socials.security.utils.annotation.AnnotationUtils;
+import ru.kimvlry.kittens.socials.security.utils.annotation.ValidationUtils;
 import ru.kimvlry.kittens.socials.security.utils.config.SecurityConfig;
 import ru.kimvlry.kittens.socials.security.utils.jwt.JwtAuthFilter;
 import ru.kimvlry.kittens.socials.security.utils.jwt.JwtTokenProvider;
@@ -31,6 +31,7 @@ import ru.kimvlry.kittens.socials.service.filters.KittenFilter;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -68,7 +69,7 @@ class KittenControllerTests {
     @MockitoBean
     private JwtAuthFilter jwtAuthFilter;
     @MockitoBean
-    private AnnotationUtils annotationUtils;
+    private ValidationUtils validationUtils;
 
 
     //  GET
@@ -262,13 +263,33 @@ class KittenControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @WithMockUser(username = "Not999")
+    void createKitten_WithDifferentOwner_returnsForbidden() throws Exception {
+        Long ownerId = 999L;
+        KittenDto requestDto = new KittenDto(
+                1L, "SneakyCat", Instant.now(),
+                KittenBreed.SPHYNX, KittenCoatColor.CARAMEL,
+                3, ownerId, Set.of()
+        );
+
+        when(validationUtils.isOwnerAssigningKittenToAnotherOwner(eq(requestDto)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/kittens")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isForbidden());
+    }
+
+
 
     // DELETE
 
     @Test
     @WithMockUser(username = "user")
     void deleteKitten_returnsNoContent() throws Exception {
-        when(annotationUtils.isKittenOwner(eq("user"), eq(99L))).thenReturn(true);
+        when(validationUtils.isKittenOwner(eq("user"), eq(99L))).thenReturn(true);
 
         mockMvc.perform(delete("/kittens/{id}", 99L))
                 .andExpect(status().isNoContent());

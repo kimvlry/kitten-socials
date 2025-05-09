@@ -62,14 +62,14 @@ public class OwnerController {
         return ownerService.createOwner(ownerDto);
     }
 
-    @PreAuthorize("@annotationUtils.isOwner(authentication.name, #id)")
+    @PreAuthorize("@validationUtils.isOwner(authentication.name, #id)")
     @Operation(summary = "Update an existing owner")
     @PutMapping("/{id}")
     public OwnerDto updateOwner(@PathVariable Long id, @Valid @RequestBody OwnerDto dto) {
         return ownerService.updateOwner(id, dto);
     }
 
-    @PreAuthorize("@annotationUtils.isOwner(authentication.name, #id)")
+    @PreAuthorize("@validationUtils.isOwner(authentication.name, #id)")
     @Operation(summary = "Delete an owner by ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

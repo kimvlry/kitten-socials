@@ -22,7 +22,7 @@ import ru.kimvlry.kittens.socials.repository.security.RefreshTokenRepository;
 import ru.kimvlry.kittens.socials.repository.security.RoleRepository;
 import ru.kimvlry.kittens.socials.repository.security.UserOwnerMappingRepository;
 import ru.kimvlry.kittens.socials.repository.security.UserRepository;
-import ru.kimvlry.kittens.socials.security.utils.annotation.AnnotationUtils;
+import ru.kimvlry.kittens.socials.security.utils.annotation.ValidationUtils;
 import ru.kimvlry.kittens.socials.security.utils.config.SecurityConfig;
 import ru.kimvlry.kittens.socials.security.utils.jwt.JwtAuthFilter;
 import ru.kimvlry.kittens.socials.security.utils.jwt.JwtTokenProvider;
@@ -54,7 +54,7 @@ class OwnerControllerTests {
     @MockitoBean private RefreshTokenRepository refreshTokenRepository;
     @MockitoBean private JwtTokenProvider jwtTokenProvider;
     @MockitoBean private JwtAuthFilter jwtAuthFilter;
-    @MockitoBean private AnnotationUtils annotationUtils;
+    @MockitoBean private ValidationUtils validationUtils;
 
     private Faker faker;
 
@@ -73,7 +73,7 @@ class OwnerControllerTests {
         Date birthday = faker.date().birthday();
         OwnerDto response = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isOwner("admin", id)).thenReturn(true);
+        when(validationUtils.isOwner("admin", id)).thenReturn(true);
         when(ownerService.getOwnerById(eq(id))).thenReturn(response);
 
         mockMvc.perform(get("/owners/{id}", id)
@@ -87,7 +87,7 @@ class OwnerControllerTests {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void getOwner_NotFound_Returns404() throws Exception {
         long id = 1L;
-        when(annotationUtils.isOwner("admin", id)).thenReturn(true);
+        when(validationUtils.isOwner("admin", id)).thenReturn(true);
         when(ownerService.getOwnerById(eq(id))).thenThrow(new EntityNotFoundException("Owner not found: " + id));
 
         mockMvc.perform(get("/owners/{id}", id)
@@ -139,7 +139,7 @@ class OwnerControllerTests {
         OwnerDto request = new OwnerDto(id, name, birthday, Collections.emptySet());
         OwnerDto response = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isOwner("admin", id)).thenReturn(true);
+        when(validationUtils.isOwner("admin", id)).thenReturn(true);
         when(ownerService.createOwner(any(OwnerDto.class))).thenReturn(response);
 
         mockMvc.perform(post("/owners")
@@ -170,7 +170,7 @@ class OwnerControllerTests {
         Date birthday = faker.date().birthday();
         OwnerDto request = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isOwner(anyString(), eq(id))).thenReturn(false);
+        when(validationUtils.isOwner(anyString(), eq(id))).thenReturn(false);
 
         mockMvc.perform(post("/owners")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -189,7 +189,7 @@ class OwnerControllerTests {
         OwnerDto request = new OwnerDto(id, name, birthday, Collections.emptySet());
         OwnerDto response = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isOwner("test", id)).thenReturn(true);
+        when(validationUtils.isOwner("test", id)).thenReturn(true);
         when(ownerService.updateOwner(eq(id), any(OwnerDto.class))).thenReturn(response);
 
         mockMvc.perform(put("/owners/{id}", id)
@@ -221,7 +221,7 @@ class OwnerControllerTests {
         Date birthday = faker.date().birthday();
         OwnerDto request = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isOwner("test", id)).thenReturn(true);
+        when(validationUtils.isOwner("test", id)).thenReturn(true);
         when(ownerService.updateOwner(eq(id), any(OwnerDto.class)))
                 .thenThrow(new EntityNotFoundException("Owner not found: " + id));
 
@@ -239,7 +239,7 @@ class OwnerControllerTests {
         Date birthday = faker.date().birthday();
         OwnerDto request = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isOwner("wrongUser", id)).thenReturn(false);
+        when(validationUtils.isOwner("wrongUser", id)).thenReturn(false);
 
         mockMvc.perform(put("/owners/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -253,7 +253,7 @@ class OwnerControllerTests {
     @WithMockUser(username = "test", roles = {"ADMIN"})
     void deleteOwner_Success_ReturnsNoContent() throws Exception {
         long id = 1L;
-        when(annotationUtils.isOwner("test", id)).thenReturn(true);
+        when(validationUtils.isOwner("test", id)).thenReturn(true);
         doNothing().when(ownerService).deleteOwner(eq(id));
 
         mockMvc.perform(delete("/owners/{id}", id)
@@ -266,7 +266,7 @@ class OwnerControllerTests {
     @WithMockUser(username = "test", roles = {"ADMIN"})
     void deleteOwner_NotFound_Returns404() throws Exception {
         long id = 1L;
-        when(annotationUtils.isOwner("test", id)).thenReturn(true);
+        when(validationUtils.isOwner("test", id)).thenReturn(true);
         doThrow(new EntityNotFoundException("Owner not found: " + id)).when(ownerService).deleteOwner(eq(id));
 
         mockMvc.perform(delete("/owners/{id}", id)
@@ -278,7 +278,7 @@ class OwnerControllerTests {
     @WithMockUser(username = "wrongUser")
     void deleteOwner_Forbidden_Returns403() throws Exception {
         long id = 1L;
-        when(annotationUtils.isOwner("wrongUser", id)).thenReturn(false);
+        when(validationUtils.isOwner("wrongUser", id)).thenReturn(false);
 
         mockMvc.perform(delete("/owners/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON))

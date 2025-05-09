@@ -9,11 +9,13 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.kimvlry.kittens.socials.entities.KittenBreed;
 import ru.kimvlry.kittens.socials.entities.KittenCoatColor;
 import ru.kimvlry.kittens.socials.dto.KittenDto;
+import ru.kimvlry.kittens.socials.security.utils.annotation.ValidationUtils;
 import ru.kimvlry.kittens.socials.service.filters.KittenFilter;
 import ru.kimvlry.kittens.socials.service.KittenService;
 
@@ -27,9 +29,11 @@ import java.util.Set;
 public class KittenController {
 
     private final KittenService kittenService;
+    private final ValidationUtils validationUtils;
 
-    public KittenController(KittenService kittenService) {
+    public KittenController(KittenService kittenService, ValidationUtils validationUtils) {
         this.kittenService = kittenService;
+        this.validationUtils = validationUtils;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -84,18 +88,24 @@ public class KittenController {
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Create a new kitten")
     @PostMapping
-    public KittenDto createKitten(@Valid @RequestBody KittenDto kittenDto) {
-        return kittenService.createKitten(kittenDto);
+    public KittenDto createKitten(@Valid @RequestBody KittenDto dto) {
+        if (validationUtils.isOwnerAssigningKittenToAnotherOwner(dto)) {
+            throw new AccessDeniedException("You can't assign kitten to another owner.");
+        }
+        return kittenService.createKitten(dto);
     }
 
-    @PreAuthorize("@annotationUtils.isKittenOwner(authentication.name, #id)")
+    @PreAuthorize("@validationUtils.isKittenOwner(authentication.name, #id)")
     @Operation(summary = "Update an existing kitten")
     @PutMapping("/{id}")
     public KittenDto updateKitten(@PathVariable Long id, @Valid @RequestBody KittenDto dto) {
+        if (validationUtils.isOwnerAssigningKittenToAnotherOwner(dto)) {
+            throw new AccessDeniedException("You can't assign kitten to another owner.");
+        }
         return kittenService.updateKitten(id, dto);
     }
 
-    @PreAuthorize("@annotationUtils.isKittenOwner(authentication.name, #id)")
+    @PreAuthorize("@validationUtils.isKittenOwner(authentication.name, #id)")
     @Operation(summary = "Delete a kitten by ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
