@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kimvlry.kittens.socials.entities.Owner;
-import ru.kimvlry.kittens.socials.dto.security.AuthRequest;
+import ru.kimvlry.kittens.socials.dto.security.AuthenticationRequest;
 import ru.kimvlry.kittens.socials.dto.security.RefreshRequest;
 import ru.kimvlry.kittens.socials.dto.security.RegistrationRequest;
 import ru.kimvlry.kittens.socials.dto.security.TokenPair;
@@ -28,7 +28,7 @@ import java.util.Collections;
 
 
 @Service
-public class AuthService {
+public class SecurityService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -39,7 +39,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public AuthService(
+    public SecurityService(
             UserRepository userRepository,
             RoleRepository roleRepository,
             OwnerRepository ownerRepository,
@@ -91,7 +91,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenPair login(@Valid AuthRequest request) {
+    public TokenPair login(@Valid AuthenticationRequest request) {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.username(),

@@ -3,37 +3,37 @@ package ru.kimvlry.kittens.socials.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kimvlry.kittens.socials.dto.security.AuthRequest;
+import ru.kimvlry.kittens.socials.dto.security.AuthenticationRequest;
 import ru.kimvlry.kittens.socials.dto.security.RefreshRequest;
 import ru.kimvlry.kittens.socials.dto.security.TokenPair;
 import ru.kimvlry.kittens.socials.dto.security.RegistrationRequest;
-import ru.kimvlry.kittens.socials.service.security.AuthService;
+import ru.kimvlry.kittens.socials.service.security.SecurityService;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class SecurityController {
 
-    private final AuthService authService;
+    private final SecurityService securityService;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+    public SecurityController(SecurityService securityService) {
+        this.securityService = securityService;
     }
 
     @PostMapping("/register")
     public ResponseEntity<TokenPair> register(@Valid @RequestBody RegistrationRequest request) {
-        TokenPair jwts = authService.register(request);
+        TokenPair jwts = securityService.register(request);
         return ResponseEntity.ok(jwts);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenPair> login(@Valid @RequestBody AuthRequest request) {
-        TokenPair jwts = authService.login(request);
+    public ResponseEntity<TokenPair> login(@Valid @RequestBody AuthenticationRequest request) {
+        TokenPair jwts = securityService.login(request);
         return ResponseEntity.ok(jwts);
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenPair> refresh(@Valid @RequestBody RefreshRequest request) {
-        TokenPair jwts = authService.refresh(request);
+        TokenPair jwts = securityService.refresh(request);
         return ResponseEntity.ok(jwts);
     }
 }

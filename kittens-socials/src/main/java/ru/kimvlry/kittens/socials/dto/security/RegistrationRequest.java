@@ -8,14 +8,10 @@ import jakarta.validation.constraints.Size;
 import java.util.Date;
 
 public record RegistrationRequest(
-        @NotBlank
-        String username,
-        @NotBlank @Size(min = 8, max = 20)
-        String password,
-        @NotNull @Email
-        String email,
-        @NotBlank
-        String name,
+        @NotBlank String username,
+        @NotBlank @Size(min = 8, max = 20) String password,
+        @NotNull @Email String email,
+        @NotBlank String name,
         Date birthDate
 ) {
 }
