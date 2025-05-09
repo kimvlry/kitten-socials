@@ -1,0 +1,101 @@
+@baseUrl = http://localhost:8080
+@kittensPath = /kittens
+@searchEndpoint = {{baseUrl}}{{kittensPath}}/search
+@getByIdEndpoint = {{baseUrl}}{{kittensPath}}/1
+
+###
+
+GET {{baseUrl}}{{kittensPath}}
+Accept: text/plain
+
+###
+
+GET {{getByIdEndpoint}}
+Accept: application/json
+
+###
+
+POST {{searchEndpoint}}?page=0&size=5
+Content-Type: application/json
+Accept: application/json
+
+{}
+
+###
+
+POST {{searchEndpoint}}?page=0&size=5
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Salem"
+}
+
+###
+
+POST {{searchEndpoint}}?page=0&size=5
+Content-Type: application/json
+Accept: application/json
+
+{
+  "breeds": [
+    "SIBERIAN"
+  ]
+}
+
+###
+
+POST {{searchEndpoint}}?page=0&size=5
+Content-Type: application/json
+Accept: application/json
+
+{
+  "minPurr": 2,
+  "maxPurr": 9
+}
+
+###
+
+POST {{searchEndpoint}}?page=0&size=5
+Content-Type: application/json
+Accept: application/json
+
+{
+  "ownerIds": [
+    1
+  ]
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "val",
+  "password": "val"
+}
+
+###
+POST http://localhost:8080/api/auth/refresh
+Content-Type: application/json
+Accept: application/json
+
+{
+  "refreshToken": "cd930e12-01fc-401b-9e52-6ea85fac408d"
+}
+
+###
+POST {}
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9...
+{
+    "id": 1,
+    "name": "Kitkat",
+    "birthDate": "2025-05-05T09:55:57.707Z",
+    "breed": "BRITISH_SHORTHAIR",
+    "coatColor": "ESPRESSO",
+    "purrLoudnessRate": 3,
+    "ownerId": 6,
+    "friendIds": []
+}

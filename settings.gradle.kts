@@ -1,3 +1,3 @@
 rootProject.name = "kimvlry"
 
-include("kittens-web")
+include("kittens-socials")
