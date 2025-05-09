@@ -44,17 +44,4 @@ public class AnnotationUtils {
                 .findByUserIdAndOwnerId(user.getId(), ownerId)
                 .isPresent();
     }
-
-    public boolean isAdmin() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new InsufficientAuthenticationException("No authentication");
-        }
-
-        return authentication
-                .getAuthorities()
-                .stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
-    }
 }

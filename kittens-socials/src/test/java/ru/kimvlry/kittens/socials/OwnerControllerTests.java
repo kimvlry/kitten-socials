@@ -66,14 +66,14 @@ class OwnerControllerTests {
     // GET
 
     @Test
-    @WithMockUser(roles = {"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void getOwner_Success_ReturnsOwnerDto() throws Exception {
         long id = 1L;
         String name = faker.name().fullName();
         Date birthday = faker.date().birthday();
         OwnerDto response = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isAdmin()).thenReturn(true);
+        when(annotationUtils.isOwner("admin", id)).thenReturn(true);
         when(ownerService.getOwnerById(eq(id))).thenReturn(response);
 
         mockMvc.perform(get("/owners/{id}", id)
@@ -84,10 +84,10 @@ class OwnerControllerTests {
     }
 
     @Test
-    @WithMockUser(roles = {"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void getOwner_NotFound_Returns404() throws Exception {
         long id = 1L;
-        when(annotationUtils.isAdmin()).thenReturn(true);
+        when(annotationUtils.isOwner("admin", id)).thenReturn(true);
         when(ownerService.getOwnerById(eq(id))).thenThrow(new EntityNotFoundException("Owner not found: " + id));
 
         mockMvc.perform(get("/owners/{id}", id)
@@ -116,14 +116,15 @@ class OwnerControllerTests {
     // POST
 
     @Test
-    @WithMockUser(roles = {"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void createOwner_Success_ReturnsCreatedOwnerDto() throws Exception {
+        Long id = 1L;
         String name = faker.name().fullName();
         Date birthday = faker.date().birthday();
-        OwnerDto request = new OwnerDto(null, name, birthday, Collections.emptySet());
-        OwnerDto response = new OwnerDto(1L, name, birthday, Collections.emptySet());
+        OwnerDto request = new OwnerDto(id, name, birthday, Collections.emptySet());
+        OwnerDto response = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isAdmin()).thenReturn(true);
+        when(annotationUtils.isOwner("admin", id)).thenReturn(true);
         when(ownerService.createOwner(any(OwnerDto.class))).thenReturn(response);
 
         mockMvc.perform(post("/owners")
@@ -149,11 +150,12 @@ class OwnerControllerTests {
     @Test
     @WithAnonymousUser
     void createOwner_Forbidden_Returns403() throws Exception {
+        Long id = 1L;
         String name = faker.name().fullName();
         Date birthday = faker.date().birthday();
-        OwnerDto request = new OwnerDto(null, name, birthday, Collections.emptySet());
+        OwnerDto request = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isAdmin()).thenReturn(false);
+        when(annotationUtils.isOwner(anyString(), eq(id))).thenReturn(false);
 
         mockMvc.perform(post("/owners")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -215,14 +217,14 @@ class OwnerControllerTests {
     }
 
     @Test
-    @WithMockUser(roles = {"USER"})
+    @WithMockUser(username = "wrongUser")
     void updateOwner_Forbidden_Returns403() throws Exception {
         long id = 1L;
         String name = faker.name().fullName();
         Date birthday = faker.date().birthday();
         OwnerDto request = new OwnerDto(id, name, birthday, Collections.emptySet());
 
-        when(annotationUtils.isAdmin()).thenReturn(false);
+        when(annotationUtils.isOwner("wrongUser", id)).thenReturn(false);
 
         mockMvc.perform(put("/owners/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -258,10 +260,10 @@ class OwnerControllerTests {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(username = "wrongUser")
     void deleteOwner_Forbidden_Returns403() throws Exception {
         long id = 1L;
-        when(annotationUtils.isAdmin()).thenReturn(false);
+        when(annotationUtils.isOwner("wrongUser", id)).thenReturn(false);
 
         mockMvc.perform(delete("/owners/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON))
