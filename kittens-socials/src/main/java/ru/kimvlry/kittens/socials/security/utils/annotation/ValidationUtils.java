@@ -1,5 +1,6 @@
 package ru.kimvlry.kittens.socials.security.utils.annotation;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,7 +49,7 @@ public class ValidationUtils {
                 .isPresent();
     }
 
-    public boolean isOwnerAssigningKittenToAnotherOwner(KittenDto dto) {
+    public void validateOwnerAssignment(KittenDto dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new InsufficientAuthenticationException("No authenticated user found");
@@ -63,6 +64,8 @@ public class ValidationUtils {
                 .map(UserOwnerMapping::getOwner)
                 .orElseThrow(() -> new IllegalArgumentException("No Owner associated with user: " + username));
 
-        return !currentOwner.getId().equals(dto.ownerId());
+        if (!currentOwner.getId().equals(dto.ownerId())) {
+            throw new AccessDeniedException("You can't assign kitten to another owner.");
+        }
     }
 }

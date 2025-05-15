@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -31,7 +32,6 @@ import ru.kimvlry.kittens.socials.service.filters.KittenFilter;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -273,15 +273,14 @@ class KittenControllerTests {
                 3, ownerId, Set.of()
         );
 
-        when(validationUtils.isOwnerAssigningKittenToAnotherOwner(eq(requestDto)))
-                .thenReturn(true);
+        doThrow(new AccessDeniedException("You can't assign kitten to another owner."))
+                .when(validationUtils).validateOwnerAssignment(eq(requestDto));
 
         mockMvc.perform(post("/kittens")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isForbidden());
     }
-
 
 
     // DELETE

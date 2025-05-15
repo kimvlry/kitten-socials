@@ -9,7 +9,6 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.kimvlry.kittens.socials.entities.KittenBreed;
@@ -89,9 +88,7 @@ public class KittenController {
     @Operation(summary = "Create a new kitten")
     @PostMapping
     public KittenDto createKitten(@Valid @RequestBody KittenDto dto) {
-        if (validationUtils.isOwnerAssigningKittenToAnotherOwner(dto)) {
-            throw new AccessDeniedException("You can't assign kitten to another owner.");
-        }
+        validationUtils.validateOwnerAssignment(dto);
         return kittenService.createKitten(dto);
     }
 
@@ -99,9 +96,7 @@ public class KittenController {
     @Operation(summary = "Update an existing kitten")
     @PutMapping("/{id}")
     public KittenDto updateKitten(@PathVariable Long id, @Valid @RequestBody KittenDto dto) {
-        if (validationUtils.isOwnerAssigningKittenToAnotherOwner(dto)) {
-            throw new AccessDeniedException("You can't assign kitten to another owner.");
-        }
+        validationUtils.validateOwnerAssignment(dto);
         return kittenService.updateKitten(id, dto);
     }
 
