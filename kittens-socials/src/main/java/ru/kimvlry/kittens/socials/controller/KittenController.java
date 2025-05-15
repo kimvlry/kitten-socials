@@ -59,28 +59,9 @@ public class KittenController {
     @Operation(summary = "Search kittens with filter")
     @GetMapping("/search")
     public Page<KittenDto> searchKittens(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Set<KittenBreed> breeds,
-            @RequestParam(required = false) Set<KittenCoatColor> coatColor,
-            @RequestParam(required = false) Integer minPurr,
-            @RequestParam(required = false) Integer maxPurr,
-            @RequestParam(required = false) Instant birthAfter,
-            @RequestParam(required = false) Instant birthBefore,
-            @RequestParam(required = false) Set<Long> ownerIds,
-            @RequestParam(required = false) Set<Long> friendIds,
+            @ModelAttribute KittenFilter filter,
             @ParameterObject Pageable pageable
     ) {
-        KittenFilter filter = new KittenFilter();
-        filter.setName(name);
-        filter.setBreeds(breeds);
-        filter.setCoatColors(coatColor);
-        filter.setMinPurr(minPurr);
-        filter.setMaxPurr(maxPurr);
-        filter.setBirthAfter(birthAfter);
-        filter.setBirthBefore(birthBefore);
-        filter.setOwnerIds(ownerIds);
-        filter.setFriendIds(friendIds);
-
         return kittenService.getKittensFiltered(filter, pageable);
     }
 

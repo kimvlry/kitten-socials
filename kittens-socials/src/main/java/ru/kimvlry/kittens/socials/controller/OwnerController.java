@@ -49,7 +49,7 @@ public class OwnerController {
     @Operation(summary = "Search owners with filter")
     @GetMapping("/search")
     public Page<OwnerDto> searchOwners(
-            @RequestBody OwnerFilter filter,
+            @ModelAttribute OwnerFilter filter,
             @ParameterObject Pageable pageable
     ) {
         return ownerService.getOwnersFiltered(filter, pageable);

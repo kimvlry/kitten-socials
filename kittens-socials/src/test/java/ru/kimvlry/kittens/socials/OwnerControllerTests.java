@@ -9,13 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.kimvlry.kittens.socials.controller.OwnerController;
+import ru.kimvlry.kittens.socials.dto.KittenDto;
 import ru.kimvlry.kittens.socials.dto.OwnerDto;
+import ru.kimvlry.kittens.socials.entities.KittenBreed;
+import ru.kimvlry.kittens.socials.entities.KittenCoatColor;
 import ru.kimvlry.kittens.socials.repository.KittenRepository;
 import ru.kimvlry.kittens.socials.repository.OwnerRepository;
 import ru.kimvlry.kittens.socials.repository.security.RefreshTokenRepository;
@@ -27,9 +34,14 @@ import ru.kimvlry.kittens.socials.security.utils.config.SecurityConfig;
 import ru.kimvlry.kittens.socials.security.utils.jwt.JwtAuthFilter;
 import ru.kimvlry.kittens.socials.security.utils.jwt.JwtTokenProvider;
 import ru.kimvlry.kittens.socials.service.OwnerService;
+import ru.kimvlry.kittens.socials.service.filters.KittenFilter;
+import ru.kimvlry.kittens.socials.service.filters.OwnerFilter;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -41,20 +53,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(SecurityConfig.class)
 @AutoConfigureMockMvc(addFilters = false)
 class OwnerControllerTests {
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper;
-    @Autowired private OwnerController ownerController;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private OwnerController ownerController;
 
-    @MockitoBean private OwnerService ownerService;
-    @MockitoBean private UserRepository userRepository;
-    @MockitoBean private OwnerRepository ownerRepository;
-    @MockitoBean private RoleRepository roleRepository;
-    @MockitoBean private UserOwnerMappingRepository userOwnerMappingRepository;
-    @MockitoBean private KittenRepository kittenRepository;
-    @MockitoBean private RefreshTokenRepository refreshTokenRepository;
-    @MockitoBean private JwtTokenProvider jwtTokenProvider;
-    @MockitoBean private JwtAuthFilter jwtAuthFilter;
-    @MockitoBean private ValidationUtils validationUtils;
+    @MockitoBean
+    private OwnerService ownerService;
+    @MockitoBean
+    private UserRepository userRepository;
+    @MockitoBean
+    private OwnerRepository ownerRepository;
+    @MockitoBean
+    private RoleRepository roleRepository;
+    @MockitoBean
+    private UserOwnerMappingRepository userOwnerMappingRepository;
+    @MockitoBean
+    private KittenRepository kittenRepository;
+    @MockitoBean
+    private RefreshTokenRepository refreshTokenRepository;
+    @MockitoBean
+    private JwtTokenProvider jwtTokenProvider;
+    @MockitoBean
+    private JwtAuthFilter jwtAuthFilter;
+    @MockitoBean
+    private ValidationUtils validationUtils;
 
     private Faker faker;
 
@@ -126,6 +151,24 @@ class OwnerControllerTests {
         mockMvc.perform(get("/owners")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser
+    void searchOwners_returnsOwnersPage() throws Exception {
+        String name = "Owner";
+        Date bday = faker.date().birthday();
+
+        OwnerDto ownerDto = new OwnerDto(1L, name, bday, Collections.emptySet());
+        Page<OwnerDto> page = new PageImpl<>(List.of(ownerDto), PageRequest.of(0, 10), 1);
+
+        when(ownerService.getOwnersFiltered(any(OwnerFilter.class), any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get("/owners/search")
+                        .param("name", name)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].name").value(name));
     }
 
     // POST
