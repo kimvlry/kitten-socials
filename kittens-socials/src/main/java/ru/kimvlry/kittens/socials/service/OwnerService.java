@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import ru.kimvlry.kittens.socials.entities.Kitten;
 import ru.kimvlry.kittens.socials.entities.Owner;
 import ru.kimvlry.kittens.socials.dto.OwnerDto;
@@ -73,8 +72,7 @@ public class OwnerService {
 
         if (dto.ownedKittensIds() == null || dto.ownedKittensIds().isEmpty()) {
             owner.setOwnedKittens(new HashSet<>());
-        }
-        else {
+        } else {
             Set<Kitten> kittens = new HashSet<>(kittenRepository.findAllById(dto.ownedKittensIds()));
             owner.setOwnedKittens(kittens);
         }

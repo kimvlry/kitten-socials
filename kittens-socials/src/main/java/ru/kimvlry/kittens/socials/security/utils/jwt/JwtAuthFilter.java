@@ -75,8 +75,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             catch (Exception e) {
                 log.error("failed to validate token", e);
             }
-        }
-        else {
+        } else {
             log.warn("token validation wasn't started: {}", jwt);
         }
         filterChain.doFilter(request, response);

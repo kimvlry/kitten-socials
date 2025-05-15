@@ -6,16 +6,13 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import ru.kimvlry.kittens.socials.entities.Kitten;
 import ru.kimvlry.kittens.socials.dto.KittenDto;
 import ru.kimvlry.kittens.socials.dto.mappers.KittenMapper;
 import ru.kimvlry.kittens.socials.repository.KittenRepository;
 import ru.kimvlry.kittens.socials.repository.specifications.KittenSpecifications;
 import ru.kimvlry.kittens.socials.repository.OwnerRepository;
-import ru.kimvlry.kittens.socials.security.utils.annotation.ValidationUtils;
 import ru.kimvlry.kittens.socials.service.filters.KittenFilter;
 
 import java.time.Instant;
@@ -103,12 +100,11 @@ public class KittenService {
         kitten.setPurrLoudnessRate(dto.purrLoudnessRate());
 
         kitten.setOwner(ownerRepository.findById(dto.ownerId())
-                    .orElseThrow(() -> new EntityNotFoundException("owner " + dto.ownerId())));
+                .orElseThrow(() -> new EntityNotFoundException("owner " + dto.ownerId())));
 
         if (dto.friendIds() == null || dto.friendIds().isEmpty()) {
             kitten.setFriends(null);
-        }
-        else {
+        } else {
             Set<Kitten> friends = new HashSet<>(kittenRepository.findAllById(dto.friendIds()));
             kitten.setFriends(friends);
         }
