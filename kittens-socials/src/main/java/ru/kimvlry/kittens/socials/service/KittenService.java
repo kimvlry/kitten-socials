@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-@Validated
 public class KittenService {
 
     private final KittenRepository kittenRepository;

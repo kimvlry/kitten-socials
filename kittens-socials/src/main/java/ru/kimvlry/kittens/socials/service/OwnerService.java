@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import ru.kimvlry.kittens.socials.dto.KittenDto;
 import ru.kimvlry.kittens.socials.entities.Kitten;
 import ru.kimvlry.kittens.socials.entities.Owner;
 import ru.kimvlry.kittens.socials.dto.OwnerDto;
@@ -23,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-@Validated
 public class OwnerService {
     private final OwnerRepository ownerRepository;
     private final KittenRepository kittenRepository;
