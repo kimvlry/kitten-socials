@@ -34,10 +34,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7).trim();
-            log.debug("Token found: {}", token);
+            log.debug("Token extracted successfully");
             return token;
         }
-        log.warn("No Bearer extracted from request. Authorization header: {}", bearerToken);
+        log.warn("No Bearer extracted from request");
         return null;
     }
 
@@ -76,7 +76,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 log.error("failed to validate token", e);
             }
         } else {
-            log.warn("token validation wasn't started: {}", jwt);
+            log.warn("token validation wasn't started");
         }
         filterChain.doFilter(request, response);
     }

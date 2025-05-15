@@ -125,7 +125,7 @@ public class JwtTokenProvider {
             JWT.require(Algorithm.HMAC512(jwtSecret))
                     .build()
                     .verify(accessToken);
-            log.debug("Token validated successfully: {}", accessToken);
+            log.debug("Token validated successfully");
             return true;
         }
         catch (JWTVerificationException e) {
