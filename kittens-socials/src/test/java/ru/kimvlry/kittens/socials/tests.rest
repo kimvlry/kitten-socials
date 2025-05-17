@@ -1,0 +1,57 @@
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+@access = <valid_access_token>
+@refresh = <valid_refresh_token>
+
+###
+
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "testUsername",
+  "password": "testPassword",
+  "email": "email@test.com",
+  "name": "testName",
+  "birthDate": "2025-05-09T19:36:27.279Z"
+}
+
+
+###
+
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "testUsername",
+  "password": "testPassword"
+}
+
+
+###
+
+POST {{baseUrl}}/kittens
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": 0,
+  "name": "Salem",
+  "birthDate": "2025-05-09T19:42:12.513Z",
+  "breed": "BRITISH_SHORTHAIR",
+  "coatColor": "ESPRESSO",
+  "purrLoudnessRate": 1,
+  "ownerId": 7,
+  "friendIds": []
+}
+
+
+###
+
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "{{refresh}}"
+}
