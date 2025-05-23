@@ -38,7 +38,7 @@ public class Kitten {
     private int purrLoudnessRate;
 
     @Column(name = "owner_id", nullable = false)
-    private Long owner;
+    private Long ownerId;
 
     @ManyToMany
     @JoinTable(

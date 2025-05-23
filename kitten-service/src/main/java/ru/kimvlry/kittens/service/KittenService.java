@@ -12,7 +12,6 @@ import ru.kimvlry.kittens.dto.KittenDto;
 import ru.kimvlry.kittens.dto.KittenMapper;
 import ru.kimvlry.kittens.repository.KittenRepository;
 import ru.kimvlry.kittens.repository.KittenSpecifications;
-import ru.kimvlry.kittens.repository.OwnerRepository;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -22,16 +21,13 @@ import java.util.Set;
 public class KittenService {
 
     private final KittenRepository kittenRepository;
-    private final OwnerRepository ownerRepository;
     private final KittenMapper kittenMapper;
 
     public KittenService(
             KittenRepository kittenRepository,
-            OwnerRepository ownerRepository,
             KittenMapper kittenMapper
     ) {
         this.kittenRepository = kittenRepository;
-        this.ownerRepository = ownerRepository;
         this.kittenMapper = kittenMapper;
     }
 
@@ -97,9 +93,7 @@ public class KittenService {
         kitten.setBreed(dto.breed());
         kitten.setCoatColor(dto.coatColor());
         kitten.setPurrLoudnessRate(dto.purrLoudnessRate());
-
-        kitten.setOwner(ownerRepository.findById(dto.ownerId())
-                .orElseThrow(() -> new EntityNotFoundException("owner " + dto.ownerId())));
+        kitten.setOwnerId(dto.ownerId());
 
         if (dto.friendIds() == null || dto.friendIds().isEmpty()) {
             kitten.setFriends(null);
