@@ -7,28 +7,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import ru.kimvlry.kittens.entities.Kitten;
 import ru.kimvlry.kittens.entities.Owner;
 import ru.kimvlry.kittens.dto.OwnerDto;
 import ru.kimvlry.kittens.dto.OwnerMapper;
-import ru.kimvlry.kittens.repository.KittenRepository;
 import ru.kimvlry.kittens.repository.OwnerRepository;
 import ru.kimvlry.kittens.repository.OwnerSpecifications;
-import ru.kimvlry.kittens.service.OwnerFilter;
 
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 public class OwnerService {
     private final OwnerRepository ownerRepository;
-    private final KittenRepository kittenRepository;
     private final OwnerMapper ownerMapper;
 
-    public OwnerService(OwnerRepository ownerRepository, KittenRepository kittenRepository, OwnerMapper ownerMapper) {
+    public OwnerService(OwnerRepository ownerRepository, OwnerMapper ownerMapper) {
         this.ownerRepository = ownerRepository;
-        this.kittenRepository = kittenRepository;
         this.ownerMapper = ownerMapper;
     }
 
@@ -69,13 +62,6 @@ public class OwnerService {
     private void fillOwnerFromDto(Owner owner, @Valid OwnerDto dto) {
         owner.setName(dto.name());
         owner.setBirthDate(dto.birthDate());
-
-        if (dto.ownedKittensIds() == null || dto.ownedKittensIds().isEmpty()) {
-            owner.setOwnedKittens(new HashSet<>());
-        } else {
-            Set<Kitten> kittens = new HashSet<>(kittenRepository.findAllById(dto.ownedKittensIds()));
-            owner.setOwnedKittens(kittens);
-        }
     }
 
     @Transactional
