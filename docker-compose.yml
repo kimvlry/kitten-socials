@@ -84,7 +84,7 @@ services:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      JWT_SECRET: mySecretKey1234567890 #kjnf
+      JWT_SECRET: <your-key>
       JWT_ACCESS_EXPIRATION: 3600000
       JWT_REFRESH_EXPIRATION: 86400000
     networks:
