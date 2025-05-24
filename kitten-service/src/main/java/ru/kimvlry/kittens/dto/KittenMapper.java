@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface KittenMapper {
-    @Mapping(source = "owner.id", target = "ownerId")
+    @Mapping(source = "ownerId", target = "ownerId")
     @Mapping(source = "friends", target = "friendIds")
     @Mapping(source = "birthDate", target = "birthDate")
     KittenDto toDto(Kitten kitten);
