@@ -14,7 +14,7 @@ repositories {
 }
 
 application {
-    mainClass.set("ru.kimvlry.kittens.socials.Main")
+    mainClass.set("ru.kimvlry.kittens.Main")
 }
 
 flyway {
@@ -64,7 +64,13 @@ dependencies {
         exclude(group = "org.yaml", module = "snakeyaml")
     }
 
+    implementation("org.springframework.amqp:spring-rabbit:3.2.5")
+
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+}
+
+tasks.jar {
+    archiveBaseName.set("owner-service")
 }
 
 tasks.test {
