@@ -12,7 +12,6 @@ import ru.kimvlry.kittens.service.SecurityService;
 @RestController
 @RequestMapping("/auth")
 public class SecurityController {
-
     private final SecurityService securityService;
 
     public SecurityController(SecurityService securityService) {

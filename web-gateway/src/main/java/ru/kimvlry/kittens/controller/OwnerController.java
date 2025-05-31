@@ -4,35 +4,51 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.kimvlry.kittens.common.OwnerDto;
 import ru.kimvlry.kittens.common.OwnerFilter;
-import ru.kimvlry.kittens.service.publisher.MessageClient;
 
-import java.util.Map;
-
+@Slf4j
 @Tag(name = "Owners", description = "Endpoints for owner catalog search and management")
 @RestController
 @RequestMapping("/owners")
+@RequiredArgsConstructor
 public class OwnerController {
-    private final String messageBrokerQueueName = "owners.request";
-
-    private final MessageClient messageClient;
-
-    public OwnerController(MessageClient messageClient) {
-        this.messageClient = messageClient;
-    }
+    private final RabbitTemplate rabbitTemplate;
+    private final RestTemplate restTemplate;
+    private final AuthHeadersBuilder authHeadersBuilder;
+    private static final String OWNER_SERVICE_URL = "http://owner-service:8080/owners";
+    private static final ParameterizedTypeReference<Page<OwnerDto>> PAGE_TYPE_REF = new ParameterizedTypeReference<>() {};
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get all existing owners")
     @GetMapping
-    public Page<OwnerDto> getKittens(@ParameterObject Pageable pageable) {
-        return messageClient.sendPageRequest(messageBrokerQueueName, "GET_KITTENS", pageable, OwnerDto.class);
+    public ResponseEntity<Page<OwnerDto>> getOwners(@ParameterObject Pageable pageable) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(OWNER_SERVICE_URL)
+                .queryParam("page", pageable.getPageNumber())
+                .queryParam("size", pageable.getPageSize());
+
+        if (pageable.getSort().isSorted()) {
+            pageable.getSort().forEach(order ->
+                    builder.queryParam("sort", order.getProperty() + "," + order.getDirection()));
+        }
+
+        return restTemplate.exchange(
+                builder.build().toUri(),
+                HttpMethod.GET,
+                new HttpEntity<>(authHeadersBuilder.build()),
+                PAGE_TYPE_REF);
     }
 
     @PermitAll
@@ -44,47 +60,67 @@ public class OwnerController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get owner by ID")
     @GetMapping("/{id}")
-    public OwnerDto getOwnerById(@PathVariable Long id) {
-        return messageClient.sendRequest(messageBrokerQueueName, "GET_OWNER", id, OwnerDto.class);
+    public ResponseEntity<OwnerDto> getOwnerById(@PathVariable Long id) {
+        return restTemplate.exchange(
+                OWNER_SERVICE_URL + "/" + id,
+                HttpMethod.GET,
+                new HttpEntity<>(authHeadersBuilder.build()),
+                OwnerDto.class);
     }
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Search owners with filter")
     @GetMapping("/search")
-    public Page<OwnerDto> searchOwners(
+    public ResponseEntity<Page<OwnerDto>> searchOwners(
             @ModelAttribute OwnerFilter filter,
-            @ParameterObject Pageable pageable
-    ) {
-        return messageClient.sendPageRequest(
-                messageBrokerQueueName,
-                "SEARCH_OWNERS",
-                Map.of("filter", filter, "pageable", pageable),
-                OwnerDto.class);
+            @ParameterObject Pageable pageable) {
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(OWNER_SERVICE_URL + "/search")
+                .queryParam("page", pageable.getPageNumber())
+                .queryParam("size", pageable.getPageSize())
+                .queryParam("name", filter.getName())
+                .queryParam("birthBefore", filter.getBirthBefore())
+                .queryParam("birthAfter", filter.getBirthAfter());
+
+        return restTemplate.exchange(
+                builder.build().toUri(),
+                HttpMethod.GET,
+                new HttpEntity<>(authHeadersBuilder.build()),
+                PAGE_TYPE_REF);
     }
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create a new owner")
     @PostMapping
-    public OwnerDto createOwner(@Valid @RequestBody OwnerDto ownerDto) {
-        return messageClient.sendRequest(messageBrokerQueueName, "CREATE_OWNER", ownerDto, OwnerDto.class);
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void createOwner(@Valid @RequestBody OwnerDto ownerDto) {
+        rabbitTemplate.convertAndSend("owner.exchange", "owner.create", ownerDto, msg -> {
+            msg.getMessageProperties().setHeader("action", "CREATE");
+            return msg;
+        });
     }
 
     @PreAuthorize("@validationUtils.isOwner(authentication.name, #id)")
     @Operation(summary = "Update an existing owner")
     @PutMapping("/{id}")
-    public OwnerDto updateOwner(@PathVariable Long id, @Valid @RequestBody OwnerDto dto) {
-        return messageClient.sendRequest(
-                messageBrokerQueueName,
-                "UPDATE_OWNER",
-                Map.of("id", id, "dto", dto),
-                OwnerDto.class);
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateOwner(@PathVariable Long id, @Valid @RequestBody OwnerDto dto) {
+        OwnerDto updatedDto = new OwnerDto(id, dto.name(), dto.birthDate(), dto.ownedKittensIds());
+        rabbitTemplate.convertAndSend("owner.exchange", "owner.update", updatedDto, msg -> {
+            msg.getMessageProperties().setHeader("action", "UPDATE");
+            return msg;
+        });
     }
 
     @PreAuthorize("@validationUtils.isOwner(authentication.name, #id)")
     @Operation(summary = "Delete an owner by ID")
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void deleteOwner(@PathVariable Long id) {
-        messageClient.sendRequest(messageBrokerQueueName, "DELETE_OWNER", id, OwnerDto.class);
+        OwnerDto dto = new OwnerDto(id, null, null, null);
+        rabbitTemplate.convertAndSend("owner.exchange", "owner.delete", dto, msg -> {
+            msg.getMessageProperties().setHeader("action", "DELETE");
+            return msg;
+        });
     }
 }
