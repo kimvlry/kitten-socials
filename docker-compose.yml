@@ -1,0 +1,134 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - kitten-network
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-gateway:
+    image: postgres:16-alpine
+    container_name: postgres-gateway
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: gateway_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-gateway-data:/var/lib/postgresql/data
+    networks:
+      - kitten-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test -d gateway_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-kitten:
+    image: postgres:16-alpine
+    container_name: postgres-kitten
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: kitten_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres-kitten-data:/var/lib/postgresql/data
+    networks:
+      - kitten-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test -d kitten_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-owner:
+    image: postgres:16-alpine
+    container_name: postgres-owner
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: owner_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres-owner-data:/var/lib/postgresql/data
+    networks:
+      - kitten-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test -d owner_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web-gateway:
+    build:
+      context: ./web-gateway
+      dockerfile: Dockerfile
+    container_name: web-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres-gateway:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      JWT_SECRET: <your-key>
+      JWT_ACCESS_EXPIRATION: 3600000
+      JWT_REFRESH_EXPIRATION: 86400000
+    networks:
+      - kitten-network
+
+  kitten-service:
+    build:
+      context: ./kitten-service
+      dockerfile: Dockerfile
+    container_name: kitten-service
+    expose:
+      - "8080"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres-kitten:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - kitten-network
+
+  owner-service:
+    build:
+      context: ./owner-service
+      dockerfile: Dockerfile
+    container_name: owner-service
+    expose:
+      - "8080"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres-owner:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - kitten-network
+
+networks:
+  kitten-network:
+    driver: bridge
+
+volumes:
+  postgres-gateway-data:
+  postgres-kitten-data:
+  postgres-owner-data:

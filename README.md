@@ -3,8 +3,7 @@
 Welcome to **KittenSocials** — the most adorable social network you'll ever find, built not for people, 
 but for their murziks. 
 Owners can register their kittens, set their breed and purring loudness, and — most importantly — help them 
-make friends with other kittens. Because even introverted tabbies need some sort of social life. 
-**No ugly brainrot there, just meow-meow.**
+make friends with other kittens. **No ugly brainrot there, just meow-meow.**
 
 ## Features
 - **Create kitten friendships** across different owners.
@@ -19,10 +18,13 @@ make friends with other kittens. Because even introverted tabbies need some sort
     - stateless authentication via **JWT tokens**.
     - secured endpoints: your kitty’s personal page is protected — only you (~~and admin~~) can access it, thanks to `Spring Security` and **role-based** access control.
 
+- KittenSocials is built using a **microservice architecture**.
+    - repository includes 3 services communicating asynchronously via RabbitMQ.
 ---
 
 ## Quick start
-### 🔧 ENVs
+dopishu popozhe...
+### ENVs
 
 To run the project, you need to define the following **environment variables**:
 
@@ -39,19 +41,18 @@ run smth like this in your supercool terminal:
   export JWT_REFRESH_EXPIRATION=1209600000 
 ```
 
-dopishu popozhe...
-
 ---
 ## Stack
 
-|               |                              |
-|---------------|------------------------------|
-| Java standard | 21                           |
-| Framework     | Spring Boot                  |
-| Build Tool    | Gradle                       |
-| Database      | PostgreSQL                   |
-| Persistence   | Spring Data JPA + Hibernate  |
-| DB migrations | Flyway                       |
-| Security      | Spring Security + JWT        |
-| Testing       | JUnit + Mockito              |
-| Documentation | Swagger (OpenAPI 3), Javadoc |
+|                |                              |
+|----------------|------------------------------|
+| Java standard  | 21                           |
+| Framework      | Spring Boot                  |
+| Build Tool     | Gradle                       |
+| Message broker | RabbitMQ                     |
+| Database       | PostgreSQL                   |
+| Persistence    | Spring Data JPA + Hibernate  |
+| DB migrations  | Flyway                       |
+| Security       | Spring Security + JWT        |
+| Testing        | JUnit + Mockito              |
+| Documentation  | Swagger (OpenAPI 3), Javadoc |
