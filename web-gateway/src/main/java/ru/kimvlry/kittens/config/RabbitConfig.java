@@ -8,10 +8,20 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
+import ru.kimvlry.kittens.security.utils.jwt.JwtTokenProvider;
 
 @Configuration
 public class RabbitConfig {
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public RabbitConfig(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     @Bean
     public Queue kittenQueue() {
         return new Queue("kitten.queue");
@@ -33,25 +43,37 @@ public class RabbitConfig {
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory factory, MessageConverter converter) {
-        RabbitTemplate template = new RabbitTemplate(factory);
-        template.setMessageConverter(converter);
-        return new RabbitTemplate(factory);
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(messageConverter);
+        template.setBeforePublishPostProcessors(message -> {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+                var tokenPair = jwtTokenProvider.updAccessAndRefreshTokens(authentication);
+                String accessToken = tokenPair.accessToken();
+
+                message.getMessageProperties().setHeader("Authorization", "Bearer " + accessToken);
+            }
+            return message;
+        });
+
+        return template;
     }
 
     @Bean
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
             ConnectionFactory connectionFactory,
-            MessageConverter converter) {
+            MessageConverter messageConverter) {
 
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
-        factory.setMessageConverter(converter);
+        factory.setMessageConverter(messageConverter);
         return factory;
-    }
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
     }
 }
