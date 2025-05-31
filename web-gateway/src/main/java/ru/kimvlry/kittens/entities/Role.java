@@ -2,6 +2,7 @@ package ru.kimvlry.kittens.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Table(name = "roles")
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class Role {
 
     @Id
@@ -23,4 +25,8 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
+
+    public Role(String name) {
+        this.name = name;
+    }
 }

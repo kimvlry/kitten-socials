@@ -6,32 +6,31 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.kimvlry.kittens.common.KittenDto;
-import ru.kimvlry.kittens.service.publisher.MessageClient;
 import ru.kimvlry.kittens.repository.UserRepository;
 import ru.kimvlry.kittens.entities.User;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class ValidationUtils {
-    private final String queue = "kittens.request";
     private final UserRepository userRepository;
-    private final MessageClient messageClient;
+    private final RestTemplate restTemplate;
+    private static final String KITTEN_SERVICE_URL = "http://kitten-service:8080/kittens";
 
     public ValidationUtils(UserRepository userRepository,
-                           MessageClient messageClient
-    ) {
+                           RestTemplate restTemplate) {
         this.userRepository = userRepository;
-        this.messageClient = messageClient;
+        this.restTemplate = restTemplate;
     }
 
-    public boolean isKittenOwner(String ownerUsername, Long id) {
+    public boolean isKittenOwner(String ownerUsername, Long kittenId) {
         User user = userRepository.findByUsername(ownerUsername)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + ownerUsername));
-        KittenDto kitten = messageClient.sendRequest(
-                queue,
-                "GET_KITTEN",
-                id,
+
+        KittenDto kitten = restTemplate.getForObject(
+                KITTEN_SERVICE_URL + "/" + kittenId,
                 KittenDto.class
         );
+
         return kitten != null && user.getOwnerId().equals(kitten.ownerId());
     }
 
@@ -48,14 +47,13 @@ public class ValidationUtils {
         }
 
         String username = authentication.getName();
-
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
 
         Long currentOwnerId = user.getOwnerId();
         if (currentOwnerId == null) {
             throw new IllegalArgumentException("No Owner associated with user: " + username);
-        };
+        }
 
         if (!currentOwnerId.equals(dto.ownerId())) {
             throw new AccessDeniedException("You can't assign kitten to another owner.");
