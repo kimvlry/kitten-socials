@@ -28,6 +28,12 @@ public class OwnerController {
     private final RabbitTemplate rabbitTemplate;
     private final RestTemplate restTemplate;
     private final AuthHeadersBuilder authHeadersBuilder;
+
+    private static final String OWNER_EXCHANGE = "owner.exchange";
+    private static final String OWNER_CREATE_ROUTING_KEY = "owner.create";
+    private static final String OWNER_UPDATE_ROUTING_KEY = "owner.update";
+    private static final String OWNER_DELETE_ROUTING_KEY = "owner.delete";
+
     private static final String OWNER_SERVICE_URL = "http://owner-service:8080/owners";
     private static final ParameterizedTypeReference<Page<OwnerDto>> PAGE_TYPE_REF = new ParameterizedTypeReference<>() {};
 
@@ -94,10 +100,7 @@ public class OwnerController {
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void createOwner(@Valid @RequestBody OwnerDto ownerDto) {
-        rabbitTemplate.convertAndSend("owner.exchange", "owner.create", ownerDto, msg -> {
-            msg.getMessageProperties().setHeader("action", "CREATE");
-            return msg;
-        });
+        rabbitTemplate.convertAndSend(OWNER_EXCHANGE, OWNER_CREATE_ROUTING_KEY, ownerDto);
     }
 
     @PreAuthorize("@validationUtils.isOwner(authentication.name, #id)")
@@ -106,10 +109,7 @@ public class OwnerController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void updateOwner(@PathVariable Long id, @Valid @RequestBody OwnerDto dto) {
         OwnerDto updatedDto = new OwnerDto(id, dto.name(), dto.birthDate(), dto.ownedKittensIds());
-        rabbitTemplate.convertAndSend("owner.exchange", "owner.update", updatedDto, msg -> {
-            msg.getMessageProperties().setHeader("action", "UPDATE");
-            return msg;
-        });
+        rabbitTemplate.convertAndSend(OWNER_EXCHANGE, OWNER_UPDATE_ROUTING_KEY, updatedDto);
     }
 
     @PreAuthorize("@validationUtils.isOwner(authentication.name, #id)")
@@ -118,9 +118,6 @@ public class OwnerController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void deleteOwner(@PathVariable Long id) {
         OwnerDto dto = new OwnerDto(id, null, null, null);
-        rabbitTemplate.convertAndSend("owner.exchange", "owner.delete", dto, msg -> {
-            msg.getMessageProperties().setHeader("action", "DELETE");
-            return msg;
-        });
+        rabbitTemplate.convertAndSend(OWNER_EXCHANGE, OWNER_DELETE_ROUTING_KEY, dto);
     }
 }

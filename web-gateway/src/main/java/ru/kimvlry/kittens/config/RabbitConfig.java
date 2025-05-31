@@ -1,6 +1,7 @@
 package ru.kimvlry.kittens.config;
 
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -23,13 +24,13 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Queue kittenQueue() {
-        return new Queue("kitten.queue");
+    public TopicExchange kittenExchange() {
+        return new TopicExchange("kitten.exchange");
     }
 
     @Bean
-    public Queue ownerQueue() {
-        return new Queue("owner.queue");
+    public TopicExchange ownerExchange() {
+        return new TopicExchange("owner.exchange");
     }
 
     @Bean

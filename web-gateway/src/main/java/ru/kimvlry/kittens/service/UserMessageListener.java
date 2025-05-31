@@ -13,9 +13,7 @@ public class UserMessageListener {
     private final UserRepository userRepository;
 
     @RabbitListener(queues = "user.queue")
-    public void handleSetOwnerId(CreateOwnerForUserDto dto, @Header("action") String action) {
-        if (!"SET_OWNER_ID".equals(action)) return;
-
+    public void handleSetOwnerId(CreateOwnerForUserDto dto) {
         userRepository.findById(dto.userId()).ifPresent(user -> {
             user.setOwnerId(dto.userId());
             userRepository.save(user);

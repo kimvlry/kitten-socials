@@ -2,7 +2,10 @@ package ru.kimvlry.kittens.config;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,11 +18,40 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RabbitConfig {
+    @Bean
+    public TopicExchange kittenExchange() {
+        return new TopicExchange("kitten.exchange");
+    }
 
     @Bean
-    public Queue kittenQueue() {
-        return new Queue("kitten.queue");
+    public Queue createQueue() {
+        return new Queue("kitten.create.queue");
     }
+
+    @Bean
+    public Queue updateQueue() {
+        return new Queue("kitten.update.queue");
+    }
+
+    @Bean
+    public Queue deleteQueue() {
+        return new Queue("kitten.delete.queue");
+    }
+    @Bean
+    public Binding createBinding(Queue createQueue, TopicExchange kittenExchange) {
+        return BindingBuilder.bind(createQueue).to(kittenExchange).with("kitten.create");
+    }
+
+    @Bean
+    public Binding updateBinding(Queue updateQueue, TopicExchange kittenExchange) {
+        return BindingBuilder.bind(updateQueue).to(kittenExchange).with("kitten.update");
+    }
+
+    @Bean
+    public Binding deleteBinding(Queue deleteQueue, TopicExchange kittenExchange) {
+        return BindingBuilder.bind(deleteQueue).to(kittenExchange).with("kitten.delete");
+    }
+
 
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {

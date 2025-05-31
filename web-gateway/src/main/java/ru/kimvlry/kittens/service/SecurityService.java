@@ -72,12 +72,9 @@ public class SecurityService {
 
         CreateOwnerForUserDto payload = new CreateOwnerForUserDto(user.getId(), user.getUsername());
         rabbitTemplate.convertAndSend(
-                "owner.queue",
-                payload,
-                message -> {
-                    message.getMessageProperties().setHeader("action", "CREATE_OWNER_FOR_USER");
-                    return message;
-                }
+                "owner.exchange",
+                "owner.create-for-user",
+                payload
         );
 
         return jwtTokenProvider.generateAccessAndRefreshTokens(user);

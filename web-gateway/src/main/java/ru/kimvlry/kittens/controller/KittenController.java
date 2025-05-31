@@ -35,10 +35,15 @@ public class KittenController {
     private final RabbitTemplate rabbitTemplate;
     private final ValidationUtils validationUtils;
     private final RestTemplate restTemplate;
-
-    private static final String KITTEN_QUEUE = "kitten.queue";
-    private static final String KITTEN_SERVICE_URL = "http://kitten-service:8080/kittens";
     private final AuthHeadersBuilder authHeadersBuilder;
+
+    private static final String KITTEN_EXCHANGE = "kitten.exchange";
+    private static final String KITTEN_CREATE_ROUTING_KEY = "kitten.create";
+    private static final String KITTEN_UPDATE_ROUTING_KEY = "kitten.update";
+    private static final String KITTEN_DELETE_ROUTING_KEY = "kitten.delete";
+
+    private static final String KITTEN_SERVICE_URL = "http://kitten-service:8080/kittens";
+
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get all existing kittens")
@@ -55,7 +60,8 @@ public class KittenController {
                 builder.toUriString(),
                 HttpMethod.GET,
                 entity,
-                new ParameterizedTypeReference<Page<KittenDto>>() {}
+                new ParameterizedTypeReference<Page<KittenDto>>() {
+                }
         ).getBody();
     }
 
@@ -93,7 +99,8 @@ public class KittenController {
                 builder.toUriString(),
                 HttpMethod.GET,
                 new HttpEntity<>(authHeadersBuilder.build()),
-                new ParameterizedTypeReference<Page<KittenDto>>() {}
+                new ParameterizedTypeReference<Page<KittenDto>>() {
+                }
         ).getBody();
 
     }
@@ -105,11 +112,12 @@ public class KittenController {
 
         String requester = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        rabbitTemplate.convertAndSend(KITTEN_QUEUE, dto, message -> {
-            message.getMessageProperties().setHeader("action", "CREATE");
-            message.getMessageProperties().setHeader("requester", requester);
-            return message;
-        });
+        rabbitTemplate.convertAndSend(
+                KITTEN_EXCHANGE, KITTEN_CREATE_ROUTING_KEY, dto,
+                message -> {
+                    message.getMessageProperties().setHeader("requester", requester);
+                    return message;
+                });
 
         return ResponseEntity.accepted().build();
     }
@@ -121,12 +129,9 @@ public class KittenController {
 
         String requester = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        rabbitTemplate.convertAndSend(KITTEN_QUEUE,
-                Map.of("id", id, "dto", dto, "requester", requester),
-                message -> {
-                    message.getMessageProperties().setHeader("action", "UPDATE");
-                    return message;
-                });
+        rabbitTemplate.convertAndSend(
+                KITTEN_EXCHANGE, KITTEN_UPDATE_ROUTING_KEY,
+                Map.of("id", id, "dto", dto, "requester", requester));
 
         return ResponseEntity.accepted().build();
     }
@@ -137,12 +142,8 @@ public class KittenController {
     public void deleteKitten(@PathVariable Long id) {
         String requester = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        rabbitTemplate.convertAndSend(KITTEN_QUEUE,
-                Map.of("id", id, "requester", requester),
-                message -> {
-                    message.getMessageProperties().setHeader("action", "DELETE");
-                    return message;
-                });
+        rabbitTemplate.convertAndSend(
+                KITTEN_EXCHANGE, KITTEN_DELETE_ROUTING_KEY,
+                Map.of("id", id, "requester", requester));
     }
-
 }

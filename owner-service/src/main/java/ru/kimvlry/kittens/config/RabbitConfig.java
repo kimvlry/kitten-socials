@@ -2,7 +2,10 @@ package ru.kimvlry.kittens.config;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,15 +18,49 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RabbitConfig {
-
     @Bean
-    public Queue ownerQueue() {
-        return new Queue("owner.queue");
+    public TopicExchange ownerExchange() {
+        return new TopicExchange("owner.exchange");
     }
 
     @Bean
-    public Queue userQueue() {
-        return new Queue("user.queue");
+    public Queue createQueue() {
+        return new Queue("owner.create.queue");
+    }
+
+    @Bean
+    public Queue updateQueue() {
+        return new Queue("owner.update.queue");
+    }
+
+    @Bean
+    public Queue deleteQueue() {
+        return new Queue("owner.delete.queue");
+    }
+
+    @Bean
+    public Queue createForUserQueue() {
+        return new Queue("owner.create-for-user.queue");
+    }
+
+    @Bean
+    public Binding createBinding(Queue createQueue, TopicExchange ownerExchange) {
+        return BindingBuilder.bind(createQueue).to(ownerExchange).with("owner.create");
+    }
+
+    @Bean
+    public Binding updateBinding(Queue updateQueue, TopicExchange ownerExchange) {
+        return BindingBuilder.bind(updateQueue).to(ownerExchange).with("owner.update");
+    }
+
+    @Bean
+    public Binding deleteBinding(Queue deleteQueue, TopicExchange ownerExchange) {
+        return BindingBuilder.bind(deleteQueue).to(ownerExchange).with("owner.delete");
+    }
+
+    @Bean
+    public Binding createForUserBinding(Queue createForUserQueue, TopicExchange ownerExchange) {
+        return BindingBuilder.bind(createForUserQueue).to(ownerExchange).with("owner.create-for-user");
     }
 
     @Bean
