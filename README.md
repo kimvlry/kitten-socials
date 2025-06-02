@@ -23,7 +23,6 @@ make friends with other kittens. **No ugly brainrot there, just meow-meow.**
 ---
 
 ## Quick start
-dopishu popozhe...
 ### ENVs
 
 To run the project, you need to define the following **environment variables**:
